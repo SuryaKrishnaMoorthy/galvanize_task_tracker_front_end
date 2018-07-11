@@ -1,0 +1,29 @@
+{
+  "name": "galvanize_task_tracker_front_end",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "live-server",
+    "build": "browserify scripts/main.js -o bundle.js",
+    "watch": "watchify scripts/main.js -o bundle.js",
+    "dev": "run-all \"npm run start\" \"npm run watch\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SuryaKrishnaMoorthy/galvanize_task_tracker_front_end.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SuryaKrishnaMoorthy/galvanize_task_tracker_front_end/issues"
+  },
+  "homepage": "https://github.com/SuryaKrishnaMoorthy/galvanize_task_tracker_front_end#readme",
+  "dependencies": {
+    "browserify": "^16.2.2",
+    "live-server": "^1.2.0",
+    "run-all": "^1.0.1",
+    "watchify": "^3.11.0"
+  }
+}
