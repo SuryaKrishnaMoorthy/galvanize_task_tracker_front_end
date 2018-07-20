@@ -5,6 +5,7 @@
     <title>Galvanize Task Tracker</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
     <link rel="stylesheet" href="./main.css">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script defer src="./main.js"></script>
     <meta name="viewport" content="width = device-width, initial-scale = 1, maximum-scale = 1">
   </head>
@@ -12,7 +13,7 @@
   <body>
     <!-- Navbar -->
     <nav class="navbar">
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="./views/tasks.html">
         <h2>Galvanize Task Tracker</h2>
       </a>
     </nav>
@@ -23,8 +24,8 @@
         <section class="login">
           <h3 class="login-header">LogIn</h3>
           <form class="needs-validation" novalidate>
-            <input type="email" class="form-control login-email" id="login-email" placeholder="Email" required>
-            <input type="password" class="form-control login-pswd" id="login-password" placeholder="Password" required>
+            <input type="email" class="form-control" id="login-email" placeholder="Email" required>
+            <input type="password" class="form-control" id="login-password" placeholder="Password" required>
             <button type="submit" class="btn btn-primary login-btn">Login</button>
           </form>
         </section>
@@ -32,10 +33,10 @@
         <section class="signup">
           <h3 class="signup-header">SignUp</h3>
           <form class="needs-validation" novalidate>
-            <input type="text" class="form-control signup-fName" id="signup-fName" placeholder="First Name" required>
-            <input type="text" class="form-control signup-lName" id="signup-lName" placeholder="Last Name" required>
-            <input type="email" class="form-control signup-email" id="signup-email" placeholder="Enter your email" required>
-            <input type="password" class="form-control signup-pswd" id="signup-password" placeholder="Password" required>
+            <input type="text" class="form-control" id="signup-fName" placeholder="First Name" required>
+            <input type="text" class="form-control" id="signup-lName" placeholder="Last Name" required>
+            <input type="email" class="form-control" id="signup-email" placeholder="Enter your email" required>
+            <input type="password" class="form-control" id="signup-password" placeholder="Password" required>
             <button type="submit" class="btn btn-primary signup-btn">SignUp</button>
           </form>
         </section>
