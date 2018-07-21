@@ -1,3 +1,5 @@
+const validation = require('./validation.js');
+
 const loginBtn = document.querySelector('.login-btn')
 const signupBtn = document.querySelector('.signup-btn')
 
@@ -6,6 +8,12 @@ loginBtn.addEventListener('click', (event) => {
 
   const email = document.getElementById('login-email').value
   const password = document.getElementById('login-password').value
+
+  if( !validation.emailFormat.test(email) || !validation.passwordFormat.test(password) ) {
+    validation.shakeNode(event.target);
+    return validation.showAndFadeError("Email/Password is not in correct format");
+  }
+
   loginUser(email, password)
 })
 
@@ -17,6 +25,12 @@ signupBtn.addEventListener('click', (event) => {
   const email = document.getElementById('signup-email').value
   const password = document.getElementById('signup-password').value
 
+  if( !validation.nameFormat.test(first_name) || !validation.nameFormat.test(last_name)
+      || !validation.emailFormat.test(email) || !validation.passwordFormat.test(password) ) {
+    validation.shakeNode(event.target);
+    return validation.showAndFadeError("The values entered are not in correct format")
+  }
+
   validateUser(first_name, last_name, email, password)
 })
 
@@ -26,7 +40,10 @@ function loginUser (email, password) {
     const token = response.data.token
     document.location.replace("./views/tasks.html")
   })
-  .catch(e => { throw new Error(e) })
+  .catch(e => {
+    validation.showAndFadeError(e.response.data.error);
+    throw new Error(e)
+  })
 }
 
 function validateUser (first_name, last_name, email, password) {
@@ -34,5 +51,13 @@ function validateUser (first_name, last_name, email, password) {
   .then(response => {
     if (response) loginUser(email, password)
   })
-  .catch(e => { throw new Error(e) })
+  .catch(e => {
+    validation.showAndFadeError(e.response.data.error);
+    throw new Error(e)
+  })
 }
+
+// Add validations to input fields on page load
+validation.addNameValidation();
+validation.addEmailValidation();
+validation.addPasswordValidation();

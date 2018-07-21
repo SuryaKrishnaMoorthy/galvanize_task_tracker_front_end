@@ -21,7 +21,6 @@
   },
   "homepage": "https://github.com/SuryaKrishnaMoorthy/galvanize_task_tracker_front_end#readme",
   "dependencies": {
-    "axios": "^0.18.0",
     "browserify": "^16.2.2",
     "cors": "^2.8.4",
     "live-server": "^1.2.0",
