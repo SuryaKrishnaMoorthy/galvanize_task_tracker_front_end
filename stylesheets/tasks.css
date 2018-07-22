@@ -1,36 +1,3 @@
-body {
-  background: url(https://www.africa.com/wp-content/uploads/2018/04/black-grey-gradient-background-for-web.jpg);
-  overflow: hidden;
-  background-repeat: no-repeat;
-  background-size: cover;
-  /* overflow: auto; */
-}
-
-/* Navbar */
-.navbar {
-  background: rgba(0, 0, 0, 0.38);
-}
-
-.navbar-brand {
-  margin-left: 10%;
-  font-weight: bold;
-  color: rgb(255, 255, 255);
-}
-
-/* Footer */
-footer {
-  display: flex;
-  justify-content: center;
-  font-weight: bold;
-  height: 30px;
-  color: white;
-}
-
-.copyright-msg {
-  align-self: center;
-}
-
-
 /* Task Tracker */
 .task-tracker {
   margin-top: 10px;
@@ -112,7 +79,7 @@ footer {
   grid-area: list-or-task;
 }
 
-/* Doing card */
+/* Doing card title, body, foot */
 .doing-card {
   display: flex;
   flex-direction: column;
