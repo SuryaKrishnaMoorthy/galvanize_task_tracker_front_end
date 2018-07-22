@@ -1,3 +1,36 @@
+body {
+  background: url(https://www.africa.com/wp-content/uploads/2018/04/black-grey-gradient-background-for-web.jpg);
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* overflow: auto; */
+}
+
+/* Navbar */
+.navbar {
+  background: rgba(0, 0, 0, 0.38);
+}
+
+.navbar-brand {
+  margin-left: 10%;
+  font-weight: bold;
+  color: rgb(255, 255, 255);
+}
+
+/* Footer */
+footer {
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+  height: 30px;
+  color: white;
+}
+
+.copyright-msg {
+  align-self: center;
+}
+
+
 /* Task Tracker */
 .task-tracker {
   margin-top: 10px;
@@ -63,6 +96,8 @@
 
 .incomplete-tasks {
   grid-area: doing-content;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .complete-tasks {
@@ -75,4 +110,32 @@
 
 .new-list-or-task {
   grid-area: list-or-task;
+}
+
+/* Doing card */
+.doing-card {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 5px;
+  width: 250px;
+  height: 200px;
+}
+
+.doing-card-body {
+  margin: 12px 5px 5px 5px;
+  height: 100%;
+  overflow: auto;
+  font-size: 15px;
+}
+
+.doing-card-footer{
+  height: 72px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.doing-completed{
+  cursor: pointer;
 }
