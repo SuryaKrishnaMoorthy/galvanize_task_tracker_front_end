@@ -86,7 +86,10 @@ validation.addPasswordValidation();
 },{"./tasks.js":2,"./validation.js":4}],2:[function(require,module,exports){
 const templates = require('./templates.js')
 
-if (window.location.href.match('tasks.html') != null) window.onload = fetchUserLists()
+if (window.location.href.match('tasks.html') != null) {
+  window.onload = fetchUserLists()
+  addClickEventToNewTaskBtn()
+}
 
 function fetchUserLists () {
   axios.get('https://auth-task-manager-server.herokuapp.com/api/lists', {
@@ -105,7 +108,7 @@ function fetchUserLists () {
 function renderUserLists (lists) {
   const listContainer = document.querySelector('.list-items-container')
   lists.forEach(list => {
-    listContainer.innerHTML += userListsTemplate(list.title)
+    listContainer.innerHTML += userListsTemplate(list)
   })
 }
 
@@ -118,6 +121,16 @@ function extractUserTasks (list) {
     } else {
       incompleteTasksContainer.innerHTML += incompleteTaskTemplate(task)
     }
+  })
+}
+
+function addClickEventToNewTaskBtn () {
+  const newTaskBtn = document.querySelector('.new-task')
+  newTaskBtn.addEventListener('click', (event) => {
+    event.preventDefault()
+
+    renderNewTaskTemplate()
+
   })
 }
 
@@ -155,10 +168,10 @@ function completedTaskTemplate (task) {
   `
 }
 
-function userListsTemplate (title) {
+function userListsTemplate (list) {
   return `
-  <li class="list-group-item list-of-task">${title}
-    <span class="badge badge-info">2</span>
+  <li class="list-group-item list-of-task">${list.title}
+    <span class="badge badge-info">${list.tasks.length}</span>
   </li>
   `
 }
