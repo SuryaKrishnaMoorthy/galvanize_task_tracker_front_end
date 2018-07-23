@@ -1,4 +1,8 @@
 /* Task Tracker */
+.lists-row, .incomplete-tasks-row, .complete-tasks-row {
+  max-height: 210px;
+}
+
 .task-tracker {
   margin-top: 10px;
   display: grid;
@@ -83,8 +87,9 @@
 .doing-card {
   display: flex;
   flex-direction: column;
-  border: 2px solid rgba(255, 255, 255, 0.9);
-  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid black;
+  /* border: 2px solid rgba(255, 255, 255, 0.9); */
+  /* color: rgba(255, 255, 255, 0.9); */
   border-radius: 5px;
   width: 250px;
   height: 200px;
@@ -103,6 +108,46 @@
   justify-content: space-between;
 }
 
+.doing-card-title {
+  border-bottom: 1px solid black;
+}
+
 .doing-completed{
   cursor: pointer;
+}
+
+/* Lists */
+.list-items-container {
+  min-height: 100px;
+  max-height: 175px;
+  overflow: scroll;
+  border: 1px solid black;
+  background: #efefef;
+}
+
+.list-of-tasks {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 3px 6px;
+}
+
+.add-list {
+  width: 100%;
+  padding: 0 !important;
+  height: 25px;
+  z-index: 10;
+  border: 1px solid black;
+  border-radius: 0;
+}
+
+/* New List or Task Template */
+.new-list-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.new-task-container {
+  display: flex;
+  flex-direction: row;
 }

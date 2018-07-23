@@ -13,6 +13,13 @@
 
 .navbar-brand {
   margin-left: 10%;
+}
+
+.logout {
+  margin-right: 10%;
+}
+
+.logout, .navbar-brand {
   font-weight: bold;
   color: rgb(255, 255, 255);
 }
