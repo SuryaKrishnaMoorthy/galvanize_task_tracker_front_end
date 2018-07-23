@@ -28,10 +28,10 @@ function completedTaskTemplate (task) {
   `
 }
 
-function userListsTemplate (title) {
+function userListsTemplate (list) {
   return `
-  <li class="list-group-item list-of-task">${title}
-    <span class="badge badge-info">2</span>
+  <li class="list-group-item list-of-task">${list.title}
+    <span class="badge badge-info">${list.tasks.length}</span>
   </li>
   `
 }
