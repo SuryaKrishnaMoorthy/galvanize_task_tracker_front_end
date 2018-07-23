@@ -1,44 +1,59 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-const validation = require('./validation.js');
+const validation = require('./validation.js')
+require('./tasks.js')
 
 const loginBtn = document.querySelector('.login-btn')
 const signupBtn = document.querySelector('.signup-btn')
+const logoutBtn = document.querySelector('.logout')
 
-loginBtn.addEventListener('click', (event) => {
-  event.preventDefault()
+if (loginBtn) {
+  loginBtn.addEventListener('click', (event) => {
+    event.preventDefault()
 
-  const email = document.getElementById('login-email').value
-  const password = document.getElementById('login-password').value
+    const email = document.getElementById('login-email').value
+    const password = document.getElementById('login-password').value
 
-  if( !validation.emailFormat.test(email) || !validation.passwordFormat.test(password) ) {
-    validation.shakeNode(event.target);
-    return validation.showAndFadeError("Email/Password is not in correct format");
-  }
+    if (!validation.emailFormat.test(email) || !validation.passwordFormat.test(password)) {
+      validation.shakeNode(event.target)
+      return validation.showAndFadeError("Email/Password is not in correct format")
+    }
 
-  loginUser(email, password)
-})
+    loginUser(email, password)
+  })
+}
 
-signupBtn.addEventListener('click', (event) => {
-  event.preventDefault()
+if (signupBtn) {
+  signupBtn.addEventListener('click', (event) => {
+    event.preventDefault()
 
-  const first_name = document.getElementById('signup-fName').value
-  const last_name = document.getElementById('signup-lName').value
-  const email = document.getElementById('signup-email').value
-  const password = document.getElementById('signup-password').value
+    const first_name = document.getElementById('signup-fName').value
+    const last_name = document.getElementById('signup-lName').value
+    const email = document.getElementById('signup-email').value
+    const password = document.getElementById('signup-password').value
 
-  if( !validation.nameFormat.test(first_name) || !validation.nameFormat.test(last_name)
-      || !validation.emailFormat.test(email) || !validation.passwordFormat.test(password) ) {
-    validation.shakeNode(event.target);
-    return validation.showAndFadeError("The values entered are not in correct format")
-  }
+    if (!validation.nameFormat.test(first_name) || !validation.nameFormat.test(last_name)
+        || !validation.emailFormat.test(email) || !validation.passwordFormat.test(password)) {
+      validation.shakeNode(event.target)
+      return validation.showAndFadeError("The values entered are not in correct format")
+    }
 
-  validateUser(first_name, last_name, email, password)
-})
+    validateUser(first_name, last_name, email, password)
+  })
+}
+
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', (event) => {
+    event.preventDefault()
+
+    logoutUser()
+  })
+}
 
 function loginUser (email, password) {
   axios.post('https://auth-task-manager-server.herokuapp.com/api/users/login', { email, password })
   .then(response => {
     const token = response.data.token
+    localStorage.setItem('token', token)
     document.location.replace("./views/tasks.html")
   })
   .catch(e => {
@@ -58,12 +73,101 @@ function validateUser (first_name, last_name, email, password) {
   })
 }
 
+function logoutUser () {
+  localStorage.clear()
+  document.location.replace("./../index.html")
+}
+
 // Add validations to input fields on page load
 validation.addNameValidation();
 validation.addEmailValidation();
 validation.addPasswordValidation();
 
-},{"./validation.js":2}],2:[function(require,module,exports){
+},{"./tasks.js":2,"./validation.js":4}],2:[function(require,module,exports){
+const templates = require('./templates.js')
+
+if (window.location.href.match('tasks.html') != null) window.onload = fetchUserLists()
+
+function fetchUserLists () {
+  axios.get('https://auth-task-manager-server.herokuapp.com/api/lists', {
+    headers: { authorization: `Bearer ${localStorage.getItem('token')}` }
+  })
+  .then(response => {
+    const lists = response.data.lists
+    if (lists[0].id) localStorage.setItem('listID', lists[0].id)
+    console.log(lists)
+    renderUserLists(lists)
+    extractUserTasks(lists[0])
+  })
+  .catch(e => { throw new Error(e) })
+}
+
+function renderUserLists (lists) {
+  const listContainer = document.querySelector('.list-items-container')
+  lists.forEach(list => {
+    listContainer.innerHTML += userListsTemplate(list.title)
+  })
+}
+
+function extractUserTasks (list) {
+  const tasks = list.tasks
+  const incompleteTasksContainer = document.querySelector('.incomplete-tasks')
+  tasks.forEach(task => {
+    if (task.completed) {
+      completedTasksContainer.innerHTML += completedTaskTemplate(task)
+    } else {
+      incompleteTasksContainer.innerHTML += incompleteTaskTemplate(task)
+    }
+  })
+}
+
+window.fetchUserLists = fetchUserLists
+// window.renderUserLists = renderUserLists
+
+},{"./templates.js":3}],3:[function(require,module,exports){
+function incompleteTaskTemplate (task) {
+  return `
+  <div class="doing-card">
+    <h5 class="doing-card-title m-2">${task.title}</h5>
+    <div class="doing-card-body m-2">
+      <p class="doing-card-content m-0">${task.description}</p>
+    </div>
+    <div class="doing-card-footer">
+      <i class="fas fa-check-circle fa-2x text-primary ml-2 doing-completed"></i>
+      <p class="updated-time mr-2 mt-1 text-muted"><small>${((Date.now())-(new Date(task.created_at*1000)))} seconds ago</small></p>
+    </div>
+  </div>
+  `
+}
+
+function completedTaskTemplate (task) {
+  return `
+  <div class="done-card">
+    <h5 class="done-card-title m-2">${task.title}</h5>
+    <div class="done-card-body m-2">
+      <p class="done-card-content m-0">${task.description}</p>
+    </div>
+    <div class="done-card-footer">
+      <i class="fas fa-check-circle fa-2x text-primary ml-2 done-completed"></i>
+      <p class="updated-time mr-2 mt-1 text-muted"><small>${((Date.now())-(new Date(task.created_at*1000)))} seconds ago</small></p>
+    </div>
+  </div>
+  `
+}
+
+function userListsTemplate (title) {
+  return `
+  <li class="list-group-item list-of-task">${title}
+    <span class="badge badge-info">2</span>
+  </li>
+  `
+}
+
+window.incompleteTaskTemplate = incompleteTaskTemplate
+window.completedTaskTemplate = completedTaskTemplate
+window.userListsTemplate = userListsTemplate
+
+},{}],4:[function(require,module,exports){
 const nameFormat = /^[a-zA-Z'.-]+$/;
 const emailFormat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 const passwordFormat = /.{8,}/;
