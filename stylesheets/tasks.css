@@ -141,13 +141,23 @@
   border-radius: 0;
 }
 
-/* New List or Task Template */
-.new-list-container {
-  display: flex;
-  flex-direction: row;
+/* Lists form */
+
+.new-task-container,
+.new-list-container{
+   height: 200px;
+   display: flex;
+   flex-direction: column;
+   justify-content: space-around;
+}
+.new-task-container form,
+.new-list-container form{
+  height: 200px;
 }
 
-.new-task-container {
-  display: flex;
-  flex-direction: row;
+.needs-validation input,
+.needs-validation textarea,
+.needs-validation button{
+  margin-top: 10px;
+  width: 400px;
 }
