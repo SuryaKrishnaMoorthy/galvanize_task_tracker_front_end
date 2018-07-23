@@ -116,6 +116,11 @@
   cursor: pointer;
 }
 
+.add-task {
+  border: 1px solid black;
+  background: #007bff;
+}
+
 /* Lists */
 .list-items-container {
   min-height: 100px;
