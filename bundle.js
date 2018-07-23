@@ -163,6 +163,25 @@ function userListsTemplate (title) {
   `
 }
 
+function createListTemplate () {
+  return `<div class="new-list-container">
+    <form class="needs-validation" novalidate>
+      <input type="text" class="form-control list-title" id="list-title" placeholder="List Title" required>
+      <button type="submit" class="btn btn-primary create-list">Create List</button>
+    </form>
+  </div>`;
+}
+
+function createTaskTemplate () {
+  return `<div class="new-task-container">
+    <form class="needs-validation" novalidate>
+      <input type="text" class="form-control task-title" id="task-title" placeholder="Title" required>
+      <textarea class="form-control task-desc" id="task-desc" placeholder="Description" rows="3" required></textarea>
+      <button type="submit" class="btn btn-primary create-list">Create Task</button>
+    </form>
+  </div>`;
+}
+
 window.incompleteTaskTemplate = incompleteTaskTemplate
 window.completedTaskTemplate = completedTaskTemplate
 window.userListsTemplate = userListsTemplate
