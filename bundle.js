@@ -86,67 +86,149 @@ validation.addPasswordValidation();
 },{"./tasks.js":2,"./validation.js":4}],2:[function(require,module,exports){
 const templates = require('./templates.js')
 
-if (window.location.href.match('tasks.html') != null) {
-  window.onload = fetchUserLists()
+if (window.location.href.match('tasks.html') != null) window.onload = displayUserContent()
+
+function displayUserContent () {
+  fetchUserLists()
   displayListForm()
+  addClickEventToNewTaskBtn()
 }
 
 function fetchUserLists() {
   axios.get('https://auth-task-manager-server.herokuapp.com/api/lists', {
-      headers: {
-        authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    })
-    .then(response => {
-      const lists = response.data.lists
-      if (lists[0].id) localStorage.setItem('listID', lists[0].id)
-      //console.log(lists)
+    headers: { authorization: `Bearer ${localStorage.getItem('token')}` }
+  })
+  .then(response => {
+    const lists = response.data.lists
+    if (lists.length) {
+      localStorage.setItem('list_id', lists[0].id)
       renderUserLists(lists)
-      extractUserTasks(lists[0])
-    })
-    .catch(e => {
-      throw new Error(e)
-    })
+      fetchUserTasks(lists[0])
+    }
+  })
+  .catch(e => { throw new Error(e) })
 }
 
 function renderUserLists(lists) {
   const listContainer = document.querySelector('.list-items-container')
-  lists.forEach(list => {
-    listContainer.innerHTML += userListsTemplate(list.id, list.title, list.tasks.length)
-  })
+  if (listContainer.innerHTML !== '') listContainer.innerHTML = ''
+  lists.forEach(list => { listContainer.innerHTML += userListsTemplate(list.id, list.title, list.tasks.length) })
   addClickEventToDeleteListBtn()
 }
 
-function extractUserTasks(list) {
+function fetchUserTasks (list) {
   const tasks = list.tasks
+  const completedTasksContainer = document.querySelector('.complete-tasks')
   const incompleteTasksContainer = document.querySelector('.incomplete-tasks')
+
+  renderUserTasks(tasks, completedTasksContainer, incompleteTasksContainer)
+  // addEventListenersForTaskCardBtns()
+}
+
+function renderUserTasks (tasks, completedTasks, incompleteTasks) {
+  if (completedTasks.innerHTML !== '') completedTasks.innerHTML = ''
+  if (incompleteTasks.innerHTML !== '') incompleteTasks.innerHTML = ''
+
   tasks.forEach(task => {
     if (task.completed) {
-      completedTasksContainer.innerHTML += completedTaskTemplate(task)
+      completedTasks.innerHTML += completedTaskTemplate(task)
     } else {
-      incompleteTasksContainer.innerHTML += incompleteTaskTemplate(task)
+      incompleteTasks.innerHTML += incompleteTaskTemplate(task)
     }
   })
 }
 
+function addClickEventToNewTaskBtn () {
+  const newTaskBtn = document.querySelector('.add-task')
+
+  newTaskBtn.addEventListener('click', (event) => {
+    event.preventDefault()
+
+    document.querySelector('.new-list-or-task').innerHTML = createTaskTemplate()
+    document.querySelector('.task-title').focus()
+    addEventListenerToCreateTaskBtn()
+  })
+}
+
+function addEventListenerToCreateTaskBtn () {
+  const createTask = document.querySelector('.create-task')
+
+  createTask.addEventListener('click', (event) => {
+    event.preventDefault()
+
+    createNewTask()
+  })
+}
+
+function addEventListenersForTaskCardBtns (task) {
+  // complete task btn, update task btn, maybe a delete task btn
+
+  // const completeTaskBtns = document.querySelectorAll('.completeTask')
+  //
+  // completeTaskBtns.forEach(btn => {
+  //   btn.addEventListener('click', (event) => {
+  //     event.preventDefault()
+  //
+  //     // complete task, move to new div, remove from old div
+  //   })
+  // })
+}
+
+function addClickEventToDeleteListBtn() {
+  const listDeleteBtns = Array.from(document.querySelectorAll(".list-delete"))
+
+  listDeleteBtns.forEach(btn => {
+    btn.addEventListener("click", (event) => {
+      event.preventDefault()
+      deleteListFromDb(event)
+    })
+  })
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+function createNewTask () {
+  const list_id = localStorage.getItem('list_id')
+  const token = localStorage.getItem('token')
+  const title = document.getElementById('task-title').value
+  const description = document.getElementById('task-desc').value
+  const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks`
+
+  axios({
+    method: 'post',
+    url: url,
+    headers: { authorization: `Bearer ${token}` },
+    data: { title, description, list_id }
+  })
+  .then(response => {
+    displayUserContent()
+    document.querySelector('.new-list-or-task').innerHTML = ''
+  })
+  .catch(e => { throw new Error(e) })
+}
+
 function displayListForm() {
-  const addListBtn = document.querySelector(".add-list");
-  const newList = document.querySelector(".new-list-or-task");
-  addListBtn.addEventListener("click", () => {
-    newList.innerHTML = createListTemplate();
-    document.querySelector("#list-title").focus();
-    submitListForm();
+  const addListBtn = document.querySelector(".add-list")
+  const templateArea = document.querySelector(".new-list-or-task")
+
+  addListBtn.addEventListener("click", (event) => {
+    event.preventDefault()
+
+    templateArea.innerHTML = createListTemplate()
+    document.querySelector("#list-title").focus()
+    submitListForm()
   })
 }
 
 function submitListForm() {
-  const createListForm = document.querySelector(".needs-validation");
-  createListForm.addEventListener('submit', createList);
+  const createListForm = document.querySelector(".needs-validation")
+  createListForm.addEventListener('submit', createList)
 }
 
-function createList(e) {
-  e.preventDefault();
-  const title = document.querySelector("#list-title").value;
+function createList(error) {
+  error.preventDefault()
+  const title = document.querySelector("#list-title").value
+
   axios('https://auth-task-manager-server.herokuapp.com/api/lists', {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
       data: { title },
@@ -156,33 +238,27 @@ function createList(e) {
       const listContainer = document.querySelector('.list-items-container')
       const title = response.data.list.title;
       const listId = response.data.list.id;
-      listContainer.innerHTML += userListsTemplate(listId, title, 0);
-      document.querySelector("#list-title").value = "";
-      addClickEventToDeleteListBtn();
+      localStorage.setItem('list_id', listId)
+      if (listContainer.innerHTML !== '') listContainer.innerHTML = ''
+      listContainer.innerHTML += userListsTemplate(listId, title, 0)
+      document.querySelector("#list-title").value = ''
+      addClickEventToDeleteListBtn()
     })
-    .catch(e => {
-      throw new Error(e);
-    })
-}
-
-function addClickEventToDeleteListBtn() {
-  const listDeleteBtns = Array.from(document.querySelectorAll(".list-delete"));
-  listDeleteBtns.forEach(listDeleteBtn => {
-    listDeleteBtn.addEventListener("click", (event) => deleteListFromDb(event))
-  })
+    .catch(e => { throw new Error(e) })
 }
 
 function deleteListFromDb(event) {
-  const currentListNode = event.target.parentNode;
-  const listId = currentListNode.getAttribute("data-id");
+  const currentListNode = event.target.parentNode
+  const listId = currentListNode.getAttribute("data-id")
+
   axios.delete(`https://auth-task-manager-server.herokuapp.com/api/lists/${listId}`, {
       headers: {  authorization: `Bearer ${localStorage.getItem('token')}` }
     })
     .then(response => currentListNode.style.display = "none")
-    .catch(e => {
-      throw new Error(e);
-    })
+    .catch(e => { throw new Error(e) })
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 window.fetchUserLists = fetchUserLists
 // window.renderUserLists = renderUserLists
@@ -196,7 +272,10 @@ function incompleteTaskTemplate (task) {
       <p class="doing-card-content m-0">${task.description}</p>
     </div>
     <div class="doing-card-footer">
-      <i class="fas fa-check-circle fa-2x text-primary ml-2 doing-completed"></i>
+      <div class="card-icons">
+        <a class="completeTask"><i class="far fa-check-square"></i></a>
+        <a class="editIncompleteTask"><i class="far fa-edit"></i></a>
+      </div>
       <p class="updated-time mr-2 mt-1 text-muted"><small>${((Date.now())-(new Date(task.created_at*1000)))} seconds ago</small></p>
     </div>
   </div>
@@ -211,7 +290,10 @@ function completedTaskTemplate (task) {
       <p class="done-card-content m-0">${task.description}</p>
     </div>
     <div class="done-card-footer">
-      <i class="fas fa-check-circle fa-2x text-primary ml-2 done-completed"></i>
+      <div class="card-icons">
+        <a class="deleteTask"><i class="far fa-window-close"></i></a>
+        <a class="editCompleteTask"><i class="far fa-edit"></i></a>
+      </div>
       <p class="updated-time mr-2 mt-1 text-muted"><small>${((Date.now())-(new Date(task.created_at*1000)))} seconds ago</small></p>
     </div>
   </div>
@@ -241,13 +323,15 @@ function createTaskTemplate () {
     <form class="needs-validation" novalidate>
       <input type="text" class="form-control task-title" id="task-title" placeholder="Title" required>
       <textarea class="form-control task-desc" id="task-desc" placeholder="Description" rows="3" required></textarea>
-      <button type="submit" class="btn btn-primary create-list">Create Task</button>
+      <button type="submit" class="btn btn-primary create-task">Create Task</button>
     </form>
   </div>`;
 }
 
 window.incompleteTaskTemplate = incompleteTaskTemplate
 window.completedTaskTemplate = completedTaskTemplate
+window.createListTemplate = createListTemplate
+window.createTaskTemplate = createTaskTemplate
 window.userListsTemplate = userListsTemplate
 window.createListTemplate = createListTemplate;
 window.createTaskTemplate = createTaskTemplate;
