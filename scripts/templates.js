@@ -28,10 +28,11 @@ function completedTaskTemplate (task) {
   `
 }
 
-function userListsTemplate (title) {
+function userListsTemplate (listId, title, taskLength) {
   return `
-  <li class="list-group-item list-of-task">${title}
-    <span class="badge badge-info">2</span>
+  <li class="list-group-item list-of-task" data-id=${listId}>${title}
+    <span class="badge badge-info">${taskLength}</span>
+    <span class="close list-delete">&times;</span>
   </li>
   `
 }
@@ -58,3 +59,5 @@ function createTaskTemplate () {
 window.incompleteTaskTemplate = incompleteTaskTemplate
 window.completedTaskTemplate = completedTaskTemplate
 window.userListsTemplate = userListsTemplate
+window.createListTemplate = createListTemplate;
+window.createTaskTemplate = createTaskTemplate;
