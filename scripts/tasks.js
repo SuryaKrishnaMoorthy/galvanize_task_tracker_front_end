@@ -79,7 +79,8 @@ function createNewTask () {
     data: { title, description, list_id }
   })
   .then(response => {
-    document.querySelector('.list-items-container').innerHTML = ''
+    console.log(response)
+    // document.querySelector('.list-items-container').innerHTML = ''
 
     // Still printing out the entire list twice, then adding the new elmt
 

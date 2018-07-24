@@ -205,6 +205,16 @@ function addEventListenersForTaskCardBtns (task) {
   })
 }
 
+function addClickEventToNewTaskBtn () {
+  const newTaskBtn = document.querySelector('.new-task')
+  newTaskBtn.addEventListener('click', (event) => {
+    event.preventDefault()
+
+    renderNewTaskTemplate()
+
+  })
+}
+
 window.fetchUserLists = fetchUserLists
 // window.renderUserLists = renderUserLists
 
