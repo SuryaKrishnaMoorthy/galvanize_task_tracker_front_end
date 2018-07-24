@@ -114,7 +114,16 @@ function renderUserLists(lists) {
   lists.forEach(list => {
     listContainer.innerHTML += userListsTemplate(list.id, list.title, list.tasks.length)
   })
+  renderTasks()
   addClickEventToDeleteListBtn()
+}
+
+function renderTasks(){
+  const lists = Array.from(document.querySelectorAll(".list-of-task"))
+  console.log(lists);
+  lists.forEach(list => {
+    list.addEventListener("click", ()=>{ if(list.getAttribute("data-id")) extractUserTasks(list) } )
+  })
 }
 
 function extractUserTasks(list) {
@@ -127,6 +136,7 @@ function extractUserTasks(list) {
       incompleteTasksContainer.innerHTML += incompleteTaskTemplate(task)
     }
   })
+
 }
 
 function displayListForm() {
@@ -183,6 +193,7 @@ function deleteListFromDb(event) {
       throw new Error(e);
     })
 }
+
 
 window.fetchUserLists = fetchUserLists
 // window.renderUserLists = renderUserLists
