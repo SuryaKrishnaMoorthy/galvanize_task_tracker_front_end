@@ -86,8 +86,10 @@ validation.addPasswordValidation();
 },{"./tasks.js":2,"./validation.js":4}],2:[function(require,module,exports){
 const templates = require('./templates.js')
 
-if (window.location.href.match('tasks.html') != null) {
-  window.onload = fetchUserLists()
+if (window.location.href.match('tasks.html') != null) window.onload = displayUserContent()
+
+function displayUserContent () {
+  fetchUserLists()
   addClickEventToNewTaskBtn()
 }
 
@@ -98,34 +100,38 @@ function fetchUserLists () {
   .then(response => {
     const lists = response.data.lists
     if (lists[0].id) localStorage.setItem('list_id', lists[0].id)
-    console.log(lists)
     renderUserLists(lists)
-    extractUserTasks(lists[0])
+    fetchUserTasks(lists[0])
   })
   .catch(e => { throw new Error(e) })
 }
 
 function renderUserLists (lists) {
   const listContainer = document.querySelector('.list-items-container')
-  lists.forEach(list => {
-    listContainer.innerHTML += userListsTemplate(list)
-  })
+
+  lists.forEach(list => { listContainer.innerHTML += userListsTemplate(list) })
 }
 
-function extractUserTasks (list) {
+function fetchUserTasks (list) {
   const tasks = list.tasks
   const completedTasksContainer = document.querySelector('.complete-tasks')
   const incompleteTasksContainer = document.querySelector('.incomplete-tasks')
 
+  renderUserTasks(tasks, completedTasksContainer, incompleteTasksContainer)
+  // addEventListenersForTaskCardBtns()
+}
+
+function renderUserTasks (tasks, completedTasks, incompleteTasks) {
+  if (completedTasks.innerHTML !== '') completedTasks.innerHTML = ''
+  if (incompleteTasks.innerHTML !== '') incompleteTasks.innerHTML = ''
+
   tasks.forEach(task => {
     if (task.completed) {
-      completedTasksContainer.innerHTML += completedTaskTemplate(task)
+      completedTasks.innerHTML += completedTaskTemplate(task)
     } else {
-      incompleteTasksContainer.innerHTML += incompleteTaskTemplate(task)
+      incompleteTasks.innerHTML += incompleteTaskTemplate(task)
     }
   })
-
-  addEventListenersForTaskCardBtns()
 }
 
 function addClickEventToNewTaskBtn () {
@@ -133,6 +139,7 @@ function addClickEventToNewTaskBtn () {
 
   newTaskBtn.addEventListener('click', (event) => {
     event.preventDefault()
+
     document.querySelector('.new-list-or-task').innerHTML = createTaskTemplate()
     document.querySelector('.task-title').focus()
     addEventListenerToCreateTaskBtn()
@@ -144,7 +151,20 @@ function addEventListenerToCreateTaskBtn () {
 
   createTask.addEventListener('click', (event) => {
     event.preventDefault()
+
     createNewTask()
+  })
+}
+
+function addEventListenersForTaskCardBtns (task) {
+  const completeTaskBtns = document.querySelectorAll('.completeTask')
+
+  completeTaskBtns.forEach(btn => {
+    btn.addEventListener('click', (event) => {
+      event.preventDefault()
+
+      // complete task, move to new div, remove from old div
+    })
   })
 }
 
@@ -155,9 +175,6 @@ function createNewTask () {
   const description = document.getElementById('task-desc').value
   const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks`
 
-  console.log(title, description, url, `Bearer ${token}`)
-
-
   axios({
     method: 'post',
     url: url,
@@ -165,54 +182,10 @@ function createNewTask () {
     data: { title, description, list_id }
   })
   .then(response => {
-    document.querySelector('.list-items-container').innerHTML = ''
-
-    // Still printing out the entire list twice, then adding the new elmt
-
-    // axios.get('https://auth-task-manager-server.herokuapp.com/api/lists', {
-    //   headers: { authorization: `Bearer ${localStorage.getItem('token')}` }
-    // })
-    // .then(response => {
-    //   const lists = response.data.lists
-    //   const list = lists[0]
-    //   const tasks = list.tasks
-    //   const completedTasksContainer = document.querySelector('.complete-tasks')
-    //   const incompleteTasksContainer = document.querySelector('.incomplete-tasks')
-    //
-    //   tasks.forEach(task => {
-    //     if (task.completed) {
-    //       completedTasksContainer.innerHTML += completedTaskTemplate(task)
-    //     } else {
-    //       incompleteTasksContainer.innerHTML += incompleteTaskTemplate(task)
-    //     }
-    //   })
-    // })
-    // .catch(e => { throw new Error(e) })
-
-
+    displayUserContent()
+    document.querySelector('.new-list-or-task').innerHTML = ''
   })
   .catch(e => { throw new Error(e) })
-}
-
-function addEventListenersForTaskCardBtns (task) {
-  const completeTaskBtns = document.querySelectorAll('.completeTask')
-  completeTaskBtns.forEach(btn => {
-    btn.addEventListener('click', (event) => {
-      event.preventDefault()
-
-      // complete task, move to new div, remove from old div
-    })
-  })
-}
-
-function addClickEventToNewTaskBtn () {
-  const newTaskBtn = document.querySelector('.new-task')
-  newTaskBtn.addEventListener('click', (event) => {
-    event.preventDefault()
-
-    renderNewTaskTemplate()
-
-  })
 }
 
 window.fetchUserLists = fetchUserLists
