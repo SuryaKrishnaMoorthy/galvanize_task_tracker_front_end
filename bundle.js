@@ -111,6 +111,7 @@ function fetchUserLists() {
 
 function renderUserLists(lists) {
   const listContainer = document.querySelector('.list-items-container')
+  console.log("LISTS:", lists)
   if (listContainer.innerHTML !== '') listContainer.innerHTML = ''
   lists.forEach(list => { listContainer.innerHTML += userListsTemplate(list.id, list.title, list.tasks.length) })
   addClickEventToDeleteListBtn()
@@ -162,16 +163,6 @@ function addEventListenerToCreateTaskBtn () {
 
 function addEventListenersForTaskCardBtns (task) {
   // complete task btn, update task btn, maybe a delete task btn
-
-  // const completeTaskBtns = document.querySelectorAll('.completeTask')
-  //
-  // completeTaskBtns.forEach(btn => {
-  //   btn.addEventListener('click', (event) => {
-  //     event.preventDefault()
-  //
-  //     // complete task, move to new div, remove from old div
-  //   })
-  // })
 }
 
 function addClickEventToDeleteListBtn() {
@@ -184,8 +175,6 @@ function addClickEventToDeleteListBtn() {
     })
   })
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 function createNewTask () {
   const list_id = localStorage.getItem('list_id')
@@ -235,11 +224,11 @@ function createList(error) {
       method: 'POST'
     })
     .then((response) => {
+      console.log('createList response.data:', response.data)
       const listContainer = document.querySelector('.list-items-container')
       const title = response.data.list.title;
       const listId = response.data.list.id;
       localStorage.setItem('list_id', listId)
-      if (listContainer.innerHTML !== '') listContainer.innerHTML = ''
       listContainer.innerHTML += userListsTemplate(listId, title, 0)
       document.querySelector("#list-title").value = ''
       addClickEventToDeleteListBtn()
@@ -258,10 +247,8 @@ function deleteListFromDb(event) {
     .catch(e => { throw new Error(e) })
 }
 
-////////////////////////////////////////////////////////////////////////////////
 
 window.fetchUserLists = fetchUserLists
-// window.renderUserLists = renderUserLists
 
 },{"./templates.js":3}],3:[function(require,module,exports){
 function incompleteTaskTemplate (task) {

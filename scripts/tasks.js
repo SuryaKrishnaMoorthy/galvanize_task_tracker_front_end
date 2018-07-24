@@ -25,6 +25,7 @@ function fetchUserLists() {
 
 function renderUserLists(lists) {
   const listContainer = document.querySelector('.list-items-container')
+  console.log("LISTS:", lists)
   if (listContainer.innerHTML !== '') listContainer.innerHTML = ''
   lists.forEach(list => { listContainer.innerHTML += userListsTemplate(list.id, list.title, list.tasks.length) })
   addClickEventToDeleteListBtn()
@@ -137,11 +138,11 @@ function createList(error) {
       method: 'POST'
     })
     .then((response) => {
+      console.log('createList response.data:', response.data)
       const listContainer = document.querySelector('.list-items-container')
       const title = response.data.list.title;
       const listId = response.data.list.id;
       localStorage.setItem('list_id', listId)
-      if (listContainer.innerHTML !== '') listContainer.innerHTML = ''
       listContainer.innerHTML += userListsTemplate(listId, title, 0)
       document.querySelector("#list-title").value = ''
       addClickEventToDeleteListBtn()
