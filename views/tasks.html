@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Galvanize Task Tracker</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css" integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous">
     <link rel="stylesheet" href="./../stylesheets/tasks.css">
     <link rel="stylesheet" href="./../main.css">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -36,17 +37,9 @@
               </ul>
               <button type="button" class="btn btn-primary add-list">+</button>
             </div>
-
           </div>
           <div class="new-list-or-task">
-            <!-- New List or Task Template area -->
-            <div class="new-task-container">
-              <form class="needs-validation" novalidate>
-                <input type="text" class="form-control task-title" id="task-title" placeholder="Title" required>
-                <textarea class="form-control task-desc" id="task-desc" placeholder="Description" rows="3" required></textarea>
-                <button type="submit" class="btn btn-primary create-list">Create Task</button>
-              </form>
-            </div>
+            <!-- New List or Task Template -->
           </div>
         </div>
       </div>
@@ -56,19 +49,7 @@
           <button type="button" class="btn add-task">+ Task</button>
         </div>
         <div class="incomplete-tasks">
-          <!-- <p>Incomplete task cards</p> -->
-
-          <!-- <div class="doing-card">
-            <h5 class="doing-card-title m-2">TITLE</h5>
-            <div class="doing-card-body m-2">
-              <p class="doing-card-content m-0">Description of Card</p>
-            </div>
-            <div class="doing-card-footer">
-              <i class="fas fa-check-circle fa-2x text-primary ml-2 doing-completed"></i>
-              <p class="updated-time mr-2 mt-1 text-muted"><small>0 seconds ago</small></p>
-            </div>
-          </div> -->
-
+          <!-- Incomplete tasks -->
         </div>
       </div>
       <div class="complete-tasks-row">
@@ -76,7 +57,7 @@
           <h2 class="complete-tasks-title">DONE:</h2>
         </div>
         <div class="complete-tasks">
-          <!-- <p>Complete task cards</p> -->
+          <!-- Complete tasks -->
         </div>
       </div>
     </div>

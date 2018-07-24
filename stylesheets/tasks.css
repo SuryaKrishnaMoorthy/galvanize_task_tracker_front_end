@@ -69,6 +69,7 @@
   grid-area: doing-content;
   display: flex;
   justify-content: flex-start;
+  overflow: scroll;
 }
 
 .complete-tasks {
@@ -84,31 +85,33 @@
 }
 
 /* Doing card title, body, foot */
-.doing-card {
+.doing-card, .done-card {
   display: flex;
   flex-direction: column;
   border: 1px solid black;
   /* border: 2px solid rgba(255, 255, 255, 0.9); */
   /* color: rgba(255, 255, 255, 0.9); */
   border-radius: 5px;
-  width: 250px;
-  height: 200px;
+  min-width: 200px;
+  min-height: 200px;
+  max-width: 200px;
+  max-height: 200px;
 }
 
-.doing-card-body {
+.doing-card-body, .done-card-body {
   margin: 12px 5px 5px 5px;
   height: 100%;
   overflow: auto;
   font-size: 15px;
 }
 
-.doing-card-footer{
+.doing-card-footer, .done-card-footer {
   height: 72px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
-.doing-card-title {
+.doing-card-title, .done-card-title {
   border-bottom: 1px solid black;
 }
 

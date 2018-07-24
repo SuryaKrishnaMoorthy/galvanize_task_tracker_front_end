@@ -6,7 +6,10 @@ function incompleteTaskTemplate (task) {
       <p class="doing-card-content m-0">${task.description}</p>
     </div>
     <div class="doing-card-footer">
-      <i class="fas fa-check-circle fa-2x text-primary ml-2 doing-completed"></i>
+      <div class="card-icons">
+        <a class="completeTask"><i class="far fa-check-square"></i></a>
+        <a class="editIncompleteTask"><i class="far fa-edit"></i></a>
+      </div>
       <p class="updated-time mr-2 mt-1 text-muted"><small>${((Date.now())-(new Date(task.created_at*1000)))} seconds ago</small></p>
     </div>
   </div>
@@ -21,7 +24,10 @@ function completedTaskTemplate (task) {
       <p class="done-card-content m-0">${task.description}</p>
     </div>
     <div class="done-card-footer">
-      <i class="fas fa-check-circle fa-2x text-primary ml-2 done-completed"></i>
+      <div class="card-icons">
+        <a class="deleteTask"><i class="far fa-window-close"></i></a>
+        <a class="editCompleteTask"><i class="far fa-edit"></i></a>
+      </div>
       <p class="updated-time mr-2 mt-1 text-muted"><small>${((Date.now())-(new Date(task.created_at*1000)))} seconds ago</small></p>
     </div>
   </div>
@@ -50,11 +56,13 @@ function createTaskTemplate () {
     <form class="needs-validation" novalidate>
       <input type="text" class="form-control task-title" id="task-title" placeholder="Title" required>
       <textarea class="form-control task-desc" id="task-desc" placeholder="Description" rows="3" required></textarea>
-      <button type="submit" class="btn btn-primary create-list">Create Task</button>
+      <button type="submit" class="btn btn-primary create-task">Create Task</button>
     </form>
   </div>`;
 }
 
 window.incompleteTaskTemplate = incompleteTaskTemplate
 window.completedTaskTemplate = completedTaskTemplate
+window.createListTemplate = createListTemplate
+window.createTaskTemplate = createTaskTemplate
 window.userListsTemplate = userListsTemplate

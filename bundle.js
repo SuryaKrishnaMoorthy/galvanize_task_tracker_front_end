@@ -97,7 +97,7 @@ function fetchUserLists () {
   })
   .then(response => {
     const lists = response.data.lists
-    if (lists[0].id) localStorage.setItem('listID', lists[0].id)
+    if (lists[0].id) localStorage.setItem('list_id', lists[0].id)
     console.log(lists)
     renderUserLists(lists)
     extractUserTasks(lists[0])
@@ -114,7 +114,9 @@ function renderUserLists (lists) {
 
 function extractUserTasks (list) {
   const tasks = list.tasks
+  const completedTasksContainer = document.querySelector('.complete-tasks')
   const incompleteTasksContainer = document.querySelector('.incomplete-tasks')
+
   tasks.forEach(task => {
     if (task.completed) {
       completedTasksContainer.innerHTML += completedTaskTemplate(task)
@@ -122,15 +124,84 @@ function extractUserTasks (list) {
       incompleteTasksContainer.innerHTML += incompleteTaskTemplate(task)
     }
   })
+
+  addEventListenersForTaskCardBtns()
 }
 
 function addClickEventToNewTaskBtn () {
-  const newTaskBtn = document.querySelector('.new-task')
+  const newTaskBtn = document.querySelector('.add-task')
+
   newTaskBtn.addEventListener('click', (event) => {
     event.preventDefault()
+    document.querySelector('.new-list-or-task').innerHTML = createTaskTemplate()
+    document.querySelector('.task-title').focus()
+    addEventListenerToCreateTaskBtn()
+  })
+}
 
-    renderNewTaskTemplate()
+function addEventListenerToCreateTaskBtn () {
+  const createTask = document.querySelector('.create-task')
 
+  createTask.addEventListener('click', (event) => {
+    event.preventDefault()
+    createNewTask()
+  })
+}
+
+function createNewTask () {
+  const list_id = localStorage.getItem('list_id')
+  const token = localStorage.getItem('token')
+  const title = document.getElementById('task-title').value
+  const description = document.getElementById('task-desc').value
+  const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks`
+
+  console.log(title, description, url, `Bearer ${token}`)
+
+
+  axios({
+    method: 'post',
+    url: url,
+    headers: { authorization: `Bearer ${token}` },
+    data: { title, description, list_id }
+  })
+  .then(response => {
+    document.querySelector('.list-items-container').innerHTML = ''
+
+    // Still printing out the entire list twice, then adding the new elmt
+
+    // axios.get('https://auth-task-manager-server.herokuapp.com/api/lists', {
+    //   headers: { authorization: `Bearer ${localStorage.getItem('token')}` }
+    // })
+    // .then(response => {
+    //   const lists = response.data.lists
+    //   const list = lists[0]
+    //   const tasks = list.tasks
+    //   const completedTasksContainer = document.querySelector('.complete-tasks')
+    //   const incompleteTasksContainer = document.querySelector('.incomplete-tasks')
+    //
+    //   tasks.forEach(task => {
+    //     if (task.completed) {
+    //       completedTasksContainer.innerHTML += completedTaskTemplate(task)
+    //     } else {
+    //       incompleteTasksContainer.innerHTML += incompleteTaskTemplate(task)
+    //     }
+    //   })
+    // })
+    // .catch(e => { throw new Error(e) })
+
+
+  })
+  .catch(e => { throw new Error(e) })
+}
+
+function addEventListenersForTaskCardBtns (task) {
+  const completeTaskBtns = document.querySelectorAll('.completeTask')
+  completeTaskBtns.forEach(btn => {
+    btn.addEventListener('click', (event) => {
+      event.preventDefault()
+
+      // complete task, move to new div, remove from old div
+    })
   })
 }
 
@@ -146,7 +217,10 @@ function incompleteTaskTemplate (task) {
       <p class="doing-card-content m-0">${task.description}</p>
     </div>
     <div class="doing-card-footer">
-      <i class="fas fa-check-circle fa-2x text-primary ml-2 doing-completed"></i>
+      <div class="card-icons">
+        <a class="completeTask"><i class="far fa-check-square"></i></a>
+        <a class="editIncompleteTask"><i class="far fa-edit"></i></a>
+      </div>
       <p class="updated-time mr-2 mt-1 text-muted"><small>${((Date.now())-(new Date(task.created_at*1000)))} seconds ago</small></p>
     </div>
   </div>
@@ -161,7 +235,10 @@ function completedTaskTemplate (task) {
       <p class="done-card-content m-0">${task.description}</p>
     </div>
     <div class="done-card-footer">
-      <i class="fas fa-check-circle fa-2x text-primary ml-2 done-completed"></i>
+      <div class="card-icons">
+        <a class="deleteTask"><i class="far fa-window-close"></i></a>
+        <a class="editCompleteTask"><i class="far fa-edit"></i></a>
+      </div>
       <p class="updated-time mr-2 mt-1 text-muted"><small>${((Date.now())-(new Date(task.created_at*1000)))} seconds ago</small></p>
     </div>
   </div>
@@ -190,13 +267,15 @@ function createTaskTemplate () {
     <form class="needs-validation" novalidate>
       <input type="text" class="form-control task-title" id="task-title" placeholder="Title" required>
       <textarea class="form-control task-desc" id="task-desc" placeholder="Description" rows="3" required></textarea>
-      <button type="submit" class="btn btn-primary create-list">Create Task</button>
+      <button type="submit" class="btn btn-primary create-task">Create Task</button>
     </form>
   </div>`;
 }
 
 window.incompleteTaskTemplate = incompleteTaskTemplate
 window.completedTaskTemplate = completedTaskTemplate
+window.createListTemplate = createListTemplate
+window.createTaskTemplate = createTaskTemplate
 window.userListsTemplate = userListsTemplate
 
 },{}],4:[function(require,module,exports){
