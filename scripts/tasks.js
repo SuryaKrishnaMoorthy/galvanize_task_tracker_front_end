@@ -102,6 +102,7 @@ function createNewTask () {
     document.querySelector('.new-list-or-task').innerHTML = ''
   })
   .catch(e => { throw new Error(e) })
+}
 
 function displayListForm() {
   const addListBtn = document.querySelector(".add-list");
@@ -153,9 +154,7 @@ function deleteListFromDb(event) {
       headers: {  authorization: `Bearer ${localStorage.getItem('token')}` }
     })
     .then(response => currentListNode.style.display = "none")
-    .catch(e => {
-      throw new Error(e);
-    })
+    .catch(e => { throw new Error(e) })
 }
 
 window.fetchUserLists = fetchUserLists

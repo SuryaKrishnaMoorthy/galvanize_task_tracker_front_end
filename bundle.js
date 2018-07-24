@@ -86,22 +86,16 @@ validation.addPasswordValidation();
 },{"./tasks.js":2,"./validation.js":4}],2:[function(require,module,exports){
 const templates = require('./templates.js')
 
-<<<<<<< HEAD
 if (window.location.href.match('tasks.html') != null) window.onload = displayUserContent()
 
 function displayUserContent () {
   fetchUserLists()
-  addClickEventToNewTaskBtn()
-=======
-if (window.location.href.match('tasks.html') != null) {
-  window.onload = fetchUserLists()
   displayListForm()
->>>>>>> master
+  addClickEventToNewTaskBtn()
 }
 
 function fetchUserLists() {
   axios.get('https://auth-task-manager-server.herokuapp.com/api/lists', {
-<<<<<<< HEAD
     headers: { authorization: `Bearer ${localStorage.getItem('token')}` }
   })
   .then(response => {
@@ -111,41 +105,16 @@ function fetchUserLists() {
     fetchUserTasks(lists[0])
   })
   .catch(e => { throw new Error(e) })
-=======
-      headers: {
-        authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    })
-    .then(response => {
-      const lists = response.data.lists
-      if (lists[0].id) localStorage.setItem('listID', lists[0].id)
-      //console.log(lists)
-      renderUserLists(lists)
-      extractUserTasks(lists[0])
-    })
-    .catch(e => {
-      throw new Error(e)
-    })
->>>>>>> master
 }
 
 function renderUserLists(lists) {
   const listContainer = document.querySelector('.list-items-container')
-<<<<<<< HEAD
 
-  lists.forEach(list => { listContainer.innerHTML += userListsTemplate(list) })
-}
-
-function fetchUserTasks (list) {
-=======
-  lists.forEach(list => {
-    listContainer.innerHTML += userListsTemplate(list.id, list.title, list.tasks.length)
-  })
+  lists.forEach(list => { listContainer.innerHTML += userListsTemplate(list.id, list.title, list.tasks.length) })
   addClickEventToDeleteListBtn()
 }
 
-function extractUserTasks(list) {
->>>>>>> master
+function fetchUserTasks (list) {
   const tasks = list.tasks
   const completedTasksContainer = document.querySelector('.complete-tasks')
   const incompleteTasksContainer = document.querySelector('.incomplete-tasks')
@@ -167,7 +136,6 @@ function renderUserTasks (tasks, completedTasks, incompleteTasks) {
   })
 }
 
-<<<<<<< HEAD
 function addClickEventToNewTaskBtn () {
   const newTaskBtn = document.querySelector('.add-task')
 
@@ -220,7 +188,8 @@ function createNewTask () {
     document.querySelector('.new-list-or-task').innerHTML = ''
   })
   .catch(e => { throw new Error(e) })
-=======
+}
+
 function displayListForm() {
   const addListBtn = document.querySelector(".add-list");
   const newList = document.querySelector(".new-list-or-task");
@@ -271,10 +240,7 @@ function deleteListFromDb(event) {
       headers: {  authorization: `Bearer ${localStorage.getItem('token')}` }
     })
     .then(response => currentListNode.style.display = "none")
-    .catch(e => {
-      throw new Error(e);
-    })
->>>>>>> master
+    .catch(e => { throw new Error(e) })
 }
 
 window.fetchUserLists = fetchUserLists
@@ -317,18 +283,11 @@ function completedTaskTemplate (task) {
   `
 }
 
-<<<<<<< HEAD
-function userListsTemplate (list) {
-  return `
-  <li class="list-group-item list-of-task">${list.title}
-    <span class="badge badge-info">${list.tasks.length}</span>
-=======
 function userListsTemplate (listId, title, taskLength) {
   return `
   <li class="list-group-item list-of-task" data-id=${listId}>${title}
     <span class="badge badge-info">${taskLength}</span>
     <span class="close list-delete">&times;</span>
->>>>>>> master
   </li>
   `
 }
