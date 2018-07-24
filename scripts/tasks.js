@@ -76,16 +76,6 @@ function addEventListenerToCreateTaskBtn () {
 
 function addEventListenersForTaskCardBtns (task) {
   // complete task btn, update task btn, maybe a delete task btn
-
-  // const completeTaskBtns = document.querySelectorAll('.completeTask')
-  //
-  // completeTaskBtns.forEach(btn => {
-  //   btn.addEventListener('click', (event) => {
-  //     event.preventDefault()
-  //
-  //     // complete task, move to new div, remove from old div
-  //   })
-  // })
 }
 
 function addClickEventToDeleteListBtn() {
@@ -98,8 +88,6 @@ function addClickEventToDeleteListBtn() {
     })
   })
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 function createNewTask () {
   const list_id = localStorage.getItem('list_id')
@@ -172,7 +160,5 @@ function deleteListFromDb(event) {
     .catch(e => { throw new Error(e) })
 }
 
-////////////////////////////////////////////////////////////////////////////////
 
 window.fetchUserLists = fetchUserLists
-// window.renderUserLists = renderUserLists
