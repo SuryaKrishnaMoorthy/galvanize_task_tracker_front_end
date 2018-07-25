@@ -56,6 +56,10 @@
 
 
 /* Cards & Content */
+.text-muted {
+  margin-top: 0 !important;
+}
+
 .lists-or-new-tasks-area {
   grid-area: list-content;
   display: grid;
