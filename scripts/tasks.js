@@ -25,32 +25,68 @@ function fetchUserLists() {
 
 function renderUserLists(lists) {
   const listContainer = document.querySelector('.list-items-container')
-  console.log("LISTS:", lists)
   if (listContainer.innerHTML !== '') listContainer.innerHTML = ''
-  lists.forEach(list => { listContainer.innerHTML += userListsTemplate(list.id, list.title, list.tasks.length) })
+  lists.forEach(list => {
+    listContainer.innerHTML += userListsTemplate(list.id, list.title, list.tasks.length)
+  })
+  addClickEventToLists(lists);
   addClickEventToDeleteListBtn()
+}
+
+function addClickEventToLists(lists) {
+  lists.forEach(list => {
+    const selector = "[data-id='" + `${list.id}` + "']";
+    const listNode = document.querySelector(selector);
+    listNode.addEventListener('click', () => {
+      fetchUserTasks(list);
+    })
+  })
 }
 
 function fetchUserTasks (list) {
   const tasks = list.tasks
   const completedTasksContainer = document.querySelector('.complete-tasks')
   const incompleteTasksContainer = document.querySelector('.incomplete-tasks')
+  localStorage.setItem('list_id', list.id)
 
   renderUserTasks(tasks, completedTasksContainer, incompleteTasksContainer)
   // addEventListenersForTaskCardBtns()
 }
 
+function getTimeDiff (task){
+  let timePassed = (Date.now() - new Date(task.created_at))/1000;
+  if (timePassed > 60) {
+    timePassed = timePassed/60;
+    if (timePassed > 60) {
+      timePassed = timePassed/60;
+      if (timePassed > 24) {
+        timePassed = timePassed/24;
+        timePassed = Math.floor(timePassed) + " days";
+      } else {
+        timePassed = Math.floor(timePassed) + " hours";
+      }
+    } else {
+      timePassed = Math.floor(timePassed) + " minutes";
+    }
+  } else {
+    timePassed = Math.floor(timePassed) + " seconds";
+  }
+  return timePassed;
+}
+
 function renderUserTasks (tasks, completedTasks, incompleteTasks) {
   if (completedTasks.innerHTML !== '') completedTasks.innerHTML = ''
   if (incompleteTasks.innerHTML !== '') incompleteTasks.innerHTML = ''
-
   tasks.forEach(task => {
+    const timePassed = getTimeDiff(task);
     if (task.completed) {
-      completedTasks.innerHTML += completedTaskTemplate(task)
+      completedTasks.innerHTML += completedTaskTemplate(task, timePassed)
     } else {
-      incompleteTasks.innerHTML += incompleteTaskTemplate(task)
+      incompleteTasks.innerHTML += incompleteTaskTemplate(task, timePassed)
     }
   })
+  markIncompleteTaskToComplete();
+  editIncompleteTask(tasks);
 }
 
 function addClickEventToNewTaskBtn () {
@@ -77,6 +113,61 @@ function addEventListenerToCreateTaskBtn () {
 
 function addEventListenersForTaskCardBtns (task) {
   // complete task btn, update task btn, maybe a delete task btn
+}
+
+function editIncompleteTask(tasks){
+  tasks.forEach(task => {
+    const selector = "[data-task-id='" + `${task.id}` + "']";
+    const taskNode = document.querySelector(selector);
+    taskNode.children[1].addEventListener('click', () => {
+      const templateArea = document.querySelector(".new-list-or-task");
+      templateArea.innerHTML = updateTaskTemplate(task);
+      addClickEventToUpdateBtn(task);
+    })
+  })
+}
+
+function addClickEventToUpdateBtn(task){
+  const createListForm = document.querySelector(".update-task");
+  createListForm.addEventListener('click', (event) => {
+    event.preventDefault()
+    const list_id = task.list_id;
+    const task_id = task.id;
+    task.description = document.querySelector("#task-desc").value;
+    updateTask(false, list_id, task_id, task)
+  })
+}
+
+function markIncompleteTaskToComplete() {
+  const completeTaskIcons = Array.from(document.querySelectorAll(".completeTask"));
+  completeTaskIcons.forEach(icon => {
+    icon.addEventListener("click", (event) => {
+      const list_id = event.target.parentNode.parentNode.getAttribute("data-list-id");
+      const task_id = event.target.parentNode.parentNode.getAttribute("data-task-id");
+      updateTask(true, list_id, task_id, null)
+    })
+  })
+}
+
+function updateTask(completed, list_id, task_id, task){
+  const token = localStorage.getItem('token');
+  const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks/${task_id}`;
+  let body;
+  if (task) {
+    body = { title:task.title, description:task.description };
+  } else {
+    body = { completed };
+  }
+  axios({
+    method: 'patch',
+    url: url,
+    headers: { authorization: `Bearer ${token}` },
+    data: body
+  })
+  .then(response => {
+    fetchUserLists();
+  })
+  .catch(e => { throw new Error(e) })
 }
 
 function addClickEventToDeleteListBtn() {
@@ -128,8 +219,8 @@ function submitListForm() {
   createListForm.addEventListener('submit', createList)
 }
 
-function createList(error) {
-  error.preventDefault()
+function createList(event) {
+  event.preventDefault()
   const title = document.querySelector("#list-title").value
 
   axios('https://auth-task-manager-server.herokuapp.com/api/lists', {
@@ -138,7 +229,6 @@ function createList(error) {
       method: 'POST'
     })
     .then((response) => {
-      console.log('createList response.data:', response.data)
       const listContainer = document.querySelector('.list-items-container')
       const title = response.data.list.title;
       const listId = response.data.list.id;
@@ -146,6 +236,7 @@ function createList(error) {
       listContainer.innerHTML += userListsTemplate(listId, title, 0)
       document.querySelector("#list-title").value = ''
       addClickEventToDeleteListBtn()
+      fetchUserLists()
     })
     .catch(e => { throw new Error(e) })
 }
@@ -157,9 +248,14 @@ function deleteListFromDb(event) {
   axios.delete(`https://auth-task-manager-server.herokuapp.com/api/lists/${listId}`, {
       headers: {  authorization: `Bearer ${localStorage.getItem('token')}` }
     })
-    .then(response => currentListNode.style.display = "none")
+    .then(response => {
+      currentListNode.style.display = "none"
+      const completedTasksContainer = document.querySelector('.complete-tasks')
+      completedTasksContainer.innerHTML = ''
+      const incompleteTasksContainer = document.querySelector('.incomplete-tasks')
+      incompleteTasksContainer.innerHTML = ''
+    })
     .catch(e => { throw new Error(e) })
 }
-
 
 window.fetchUserLists = fetchUserLists

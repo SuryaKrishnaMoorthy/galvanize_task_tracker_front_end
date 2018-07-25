@@ -1,4 +1,4 @@
-function incompleteTaskTemplate (task) {
+function incompleteTaskTemplate (task, timePassed) {
   return `
   <div class="doing-card">
     <h5 class="doing-card-title m-2">${task.title}</h5>
@@ -6,17 +6,17 @@ function incompleteTaskTemplate (task) {
       <p class="doing-card-content m-0">${task.description}</p>
     </div>
     <div class="doing-card-footer">
-      <div class="card-icons">
+      <div class="card-icons" data-list-id=${task.list_id} data-task-id=${task.id}>
         <a class="completeTask"><i class="far fa-check-square"></i></a>
         <a class="editIncompleteTask"><i class="far fa-edit"></i></a>
       </div>
-      <p class="updated-time mr-2 mt-1 text-muted"><small>${((Date.now())-(new Date(task.created_at*1000)))} seconds ago</small></p>
+      <p class="updated-time mr-2 mt-1 text-muted"><small>${timePassed} ago</small></p>
     </div>
   </div>
   `
 }
 
-function completedTaskTemplate (task) {
+function completedTaskTemplate (task, timePassed) {
   return `
   <div class="done-card">
     <h5 class="done-card-title m-2">${task.title}</h5>
@@ -24,11 +24,11 @@ function completedTaskTemplate (task) {
       <p class="done-card-content m-0">${task.description}</p>
     </div>
     <div class="done-card-footer">
-      <div class="card-icons">
+      <div class="card-icons" data-list-id=${task.list_id} data-task-id=${task.id}>
         <a class="deleteTask"><i class="far fa-window-close"></i></a>
         <a class="editCompleteTask"><i class="far fa-edit"></i></a>
       </div>
-      <p class="updated-time mr-2 mt-1 text-muted"><small>${((Date.now())-(new Date(task.created_at*1000)))} seconds ago</small></p>
+      <p class="updated-time mr-2 mt-1 text-muted"><small>${timePassed} ago</small></p>
     </div>
   </div>
   `
@@ -62,6 +62,16 @@ function createTaskTemplate () {
   </div>`;
 }
 
+function updateTaskTemplate (task) {
+  return `<div class="new-task-container">
+    <form class="needs-validation" novalidate>
+      <input type="text" class="form-control task-title" id="task-title" placeholder="Title" value="${task.title}" required>
+      <textarea class="form-control task-desc" id="task-desc" placeholder="Description" rows="3" required >${task.description}</textarea>
+      <button type="submit" class="btn btn-primary update-task">Update Task</button>
+    </form>
+  </div>`;
+}
+
 window.incompleteTaskTemplate = incompleteTaskTemplate
 window.completedTaskTemplate = completedTaskTemplate
 window.createListTemplate = createListTemplate
@@ -69,3 +79,4 @@ window.createTaskTemplate = createTaskTemplate
 window.userListsTemplate = userListsTemplate
 window.createListTemplate = createListTemplate;
 window.createTaskTemplate = createTaskTemplate;
+window.updateTaskTemplate = updateTaskTemplate;
