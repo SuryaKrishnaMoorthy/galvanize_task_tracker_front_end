@@ -26,6 +26,7 @@ function completedTaskTemplate (task, timePassed) {
     </div>
     <div class="done-card-footer">
       <div class="card-icons" data-list-id=${task.list_id} data-task-id=${task.id}>
+        <a class="uncompleteTask"><i class="far fa-check-square"></i></a>
         <a class="deleteTask"><i class="far fa-window-close"></i></a>
         <a class="editCompleteTask"><i class="far fa-edit"></i></a>
       </div>
