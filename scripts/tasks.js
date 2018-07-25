@@ -59,7 +59,6 @@ function fetchUserTasks (list) {
   localStorage.setItem('list_id', list.id)
 
   renderUserTasks(tasks, completedTasksContainer, incompleteTasksContainer)
-  // addEventListenersForTaskCardBtns()
 }
 
 function getTimeDiff (task){
@@ -88,14 +87,17 @@ function getTimeDiff (task){
 function renderUserTasks (tasks, completedTasks, incompleteTasks) {
   if (completedTasks.innerHTML !== '') completedTasks.innerHTML = ''
   if (incompleteTasks.innerHTML !== '') incompleteTasks.innerHTML = ''
+
   tasks.forEach(task => {
-    const timePassed = getTimeDiff(task);
+    const timePassed = getTimeDiff(task)
+
     if (task.completed) {
       completedTasks.innerHTML += completedTaskTemplate(task, timePassed)
     } else {
       incompleteTasks.innerHTML += incompleteTaskTemplate(task, timePassed)
     }
   })
+
   onClickToggleTaskCompletion()
   editIncompleteTask(tasks)
   addEventListenerToDeleteTask()
@@ -147,10 +149,6 @@ function addEventListenerToCreateTaskBtn () {
 
     createNewTask()
   })
-}
-
-function addEventListenersForTaskCardBtns (task) {
-  // complete task btn, update task btn, maybe a delete task btn
 }
 
 function editIncompleteTask(tasks){
@@ -216,7 +214,8 @@ function updateTask(completed, list_id, task_id, task){
     data: body
   })
   .then(response => {
-    fetchUserLists();
+    document.querySelector(".new-list-or-task").innerHTML = ''
+    fetchUserLists()
   })
   .catch(e => { throw new Error(e) })
 }
