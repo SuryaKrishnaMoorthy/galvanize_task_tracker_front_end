@@ -38,16 +38,18 @@ function renderUserLists(lists) {
   lists.forEach(list => {
     listContainer.innerHTML += userListsTemplate(list.id, list.title, list.tasks.length)
   })
-  addClickEventToLists(lists);
+  addClickEventToLists(lists)
+  updateActiveListWhenClicked()
   addClickEventToDeleteListBtn()
 }
 
 function addClickEventToLists(lists) {
   lists.forEach(list => {
-    const selector = "[data-id='" + `${list.id}` + "']";
-    const listNode = document.querySelector(selector);
+    const selector = "[data-id='" + `${list.id}` + "']"
+    const listNode = document.querySelector(selector)
+
     listNode.addEventListener('click', () => {
-      fetchUserTasks(list);
+      fetchUserTasks(list)
     })
   })
 }
@@ -311,6 +313,21 @@ function deleteListFromDb(event) {
 
 function displayNewListTemplateIfNewUser () {
   document.querySelector(".add-list").click()
+}
+
+function updateActiveListWhenClicked () {
+  const lists = document.querySelectorAll('.list-of-task')
+  lists.forEach(list => {
+    list.addEventListener('click', (event) => {
+      event.preventDefault()
+
+      document.querySelectorAll('.list-of-task').forEach(li => {
+        if (li.style.backgroundColor !== '#fff') li.style.backgroundColor = '#fff'
+      })
+
+      list.style.backgroundColor = '#8eb9ff'
+    })
+  })
 }
 
 window.fetchUserLists = fetchUserLists
