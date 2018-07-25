@@ -6,6 +6,7 @@ function displayUserContent () {
   fetchUserLists()
   displayListForm()
   addClickEventToNewTaskBtn()
+  addEventListenerToDeleteTask()
 }
 
 function fetchUserLists() {
@@ -55,7 +56,6 @@ function fetchUserTasks (list) {
 
 function getTimeDiff (task){
   let createTime = (task.created_at === task.updated_at) ? task.created_at : task.updated_at;
-  let timeString = (task.created_at === task.updated_at) ? "Created " : "Updated ";
   let timePassed = (Date.now() - new Date(createTime))/1000;
 
   if (timePassed > 60) {
@@ -74,7 +74,7 @@ function getTimeDiff (task){
   } else {
     timePassed = Math.floor(timePassed) + " seconds";
   }
-  return timeString + timePassed;
+  return timePassed
 }
 
 function renderUserTasks (tasks, completedTasks, incompleteTasks) {

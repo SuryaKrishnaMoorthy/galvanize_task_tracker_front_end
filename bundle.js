@@ -92,6 +92,7 @@ function displayUserContent () {
   fetchUserLists()
   displayListForm()
   addClickEventToNewTaskBtn()
+  addEventListenerToDeleteTask()
 }
 
 function fetchUserLists() {
@@ -141,7 +142,6 @@ function fetchUserTasks (list) {
 
 function getTimeDiff (task){
   let createTime = (task.created_at === task.updated_at) ? task.created_at : task.updated_at;
-  let timeString = (task.created_at === task.updated_at) ? "Created " : "Updated ";
   let timePassed = (Date.now() - new Date(createTime))/1000;
 
   if (timePassed > 60) {
@@ -160,7 +160,7 @@ function getTimeDiff (task){
   } else {
     timePassed = Math.floor(timePassed) + " seconds";
   }
-  return timeString + timePassed;
+  return timePassed
 }
 
 function renderUserTasks (tasks, completedTasks, incompleteTasks) {
@@ -195,7 +195,7 @@ function addEventListenerToDeleteTask () {
 function deleteTask (completed, list_id, task_id, task) {
   const token = localStorage.getItem('token')
   const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks/${task_id}`
-  
+
   axios({
     method: 'delete',
     url: url,
@@ -393,6 +393,7 @@ function incompleteTaskTemplate (task, timePassed) {
       <div class="card-icons" data-list-id=${task.list_id} data-task-id=${task.id}>
         <a class="completeTask"><i class="far fa-check-square"></i></a>
         <a class="editIncompleteTask"><i class="far fa-edit"></i></a>
+        <a class="deleteTask"><i class="far fa-window-close"></i></a>
       </div>
       <p class="updated-time mr-2 mt-1 text-muted"><small>${timePassed} ago</small></p>
     </div>
