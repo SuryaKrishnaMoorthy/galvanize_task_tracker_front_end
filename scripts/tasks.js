@@ -1,4 +1,5 @@
 const templates = require('./templates.js')
+const validation = require('./validation.js')
 
 if (window.location.href.match('tasks.html') != null) window.onload = displayUserContent()
 
@@ -137,7 +138,7 @@ function addEventListenerToCreateTaskBtn () {
   createTask.addEventListener('click', (event) => {
     event.preventDefault()
 
-    createNewTask()
+    createNewTask(event)
   })
 }
 
@@ -193,6 +194,12 @@ function updateTask(completed, list_id, task_id, task){
   } else {
     body = { completed };
   }
+
+  if(!task.title){
+    document.querySelector(".invalid-feedback-updatetask small").innerHTML = "Please provide title";
+    return;
+  }
+
   axios({
     method: 'patch',
     url: url,
@@ -216,11 +223,19 @@ function addClickEventToDeleteListBtn() {
   })
 }
 
-function createNewTask () {
+function createNewTask (event) {
   const list_id = localStorage.getItem('list_id')
   const token = localStorage.getItem('token')
   const title = document.getElementById('task-title').value
   const description = document.getElementById('task-desc').value
+
+  if(!title){
+    const titleFormat = /./;
+    validation.changeInputBoxStyle(event, titleFormat);
+    document.querySelector(".invalid-feedback-task small").innerHTML = "Please provide title";
+    return;
+  }
+
   const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks`
 
   axios({
@@ -257,6 +272,11 @@ function submitListForm() {
 function createList(event) {
   event.preventDefault()
   const title = document.querySelector("#list-title").value
+
+  if(!title){
+    document.querySelector(".invalid-feedback-list small").innerHTML = "Please provide title";
+    return;
+  }
 
   axios('https://auth-task-manager-server.herokuapp.com/api/lists', {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },

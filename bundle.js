@@ -85,6 +85,7 @@ validation.addPasswordValidation();
 
 },{"./tasks.js":2,"./validation.js":4}],2:[function(require,module,exports){
 const templates = require('./templates.js')
+const validation = require('./validation.js')
 
 if (window.location.href.match('tasks.html') != null) window.onload = displayUserContent()
 
@@ -195,7 +196,7 @@ function addEventListenerToDeleteTask () {
 function deleteTask (completed, list_id, task_id, task) {
   const token = localStorage.getItem('token')
   const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks/${task_id}`
-  
+
   axios({
     method: 'delete',
     url: url,
@@ -223,7 +224,7 @@ function addEventListenerToCreateTaskBtn () {
   createTask.addEventListener('click', (event) => {
     event.preventDefault()
 
-    createNewTask()
+    createNewTask(event)
   })
 }
 
@@ -279,6 +280,12 @@ function updateTask(completed, list_id, task_id, task){
   } else {
     body = { completed };
   }
+
+  if(!task.title){
+    document.querySelector(".invalid-feedback-updatetask small").innerHTML = "Please provide title";
+    return;
+  }
+
   axios({
     method: 'patch',
     url: url,
@@ -302,11 +309,19 @@ function addClickEventToDeleteListBtn() {
   })
 }
 
-function createNewTask () {
+function createNewTask (event) {
   const list_id = localStorage.getItem('list_id')
   const token = localStorage.getItem('token')
   const title = document.getElementById('task-title').value
   const description = document.getElementById('task-desc').value
+
+  if(!title){
+    const titleFormat = /./;
+    validation.changeInputBoxStyle(event, titleFormat);
+    document.querySelector(".invalid-feedback-task small").innerHTML = "Please provide title";
+    return;
+  }
+
   const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks`
 
   axios({
@@ -343,6 +358,11 @@ function submitListForm() {
 function createList(event) {
   event.preventDefault()
   const title = document.querySelector("#list-title").value
+
+  if(!title){
+    document.querySelector(".invalid-feedback-list small").innerHTML = "Please provide title";
+    return;
+  }
 
   axios('https://auth-task-manager-server.herokuapp.com/api/lists', {
       headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -381,7 +401,7 @@ function deleteListFromDb(event) {
 
 window.fetchUserLists = fetchUserLists
 
-},{"./templates.js":3}],3:[function(require,module,exports){
+},{"./templates.js":3,"./validation.js":4}],3:[function(require,module,exports){
 function incompleteTaskTemplate (task, timePassed) {
   return `
   <div class="doing-card">
@@ -430,7 +450,8 @@ function userListsTemplate (listId, title, taskLength) {
 function createListTemplate () {
   return `<div class="new-list-container">
     <form class="needs-validation" novalidate>
-      <input type="text" class="form-control list-title" id="list-title" placeholder="List Title" required>
+      <input type="text" class="form-control list-title title" id="list-title" placeholder="List Title" required>
+      <div class="invalid-feedback-list text-danger"><small></small></div>
       <button type="submit" class="btn btn-primary create-list">Create List</button>
     </form>
   </div>`;
@@ -439,7 +460,8 @@ function createListTemplate () {
 function createTaskTemplate () {
   return `<div class="new-task-container">
     <form class="needs-validation" novalidate>
-      <input type="text" class="form-control task-title" id="task-title" placeholder="Title" required>
+      <input type="text" class="form-control task-title title" id="task-title" placeholder="Title" required>
+      <div class="invalid-feedback-task text-danger m-0 p-0"><small></small></div>
       <textarea class="form-control task-desc" id="task-desc" placeholder="Description" rows="3" required></textarea>
       <button type="submit" class="btn btn-primary create-task">Create Task</button>
     </form>
@@ -449,7 +471,8 @@ function createTaskTemplate () {
 function updateTaskTemplate (task) {
   return `<div class="new-task-container">
     <form class="needs-validation" novalidate>
-      <input type="text" class="form-control task-title" id="task-title" placeholder="Title" value="${task.title}" required>
+      <input type="text" class="form-control task-title title" id="task-title" placeholder="Title" value="${task.title}" required>
+      <div class="invalid-feedback-updatetask text-danger"><small></small></div>
       <textarea class="form-control task-desc" id="task-desc" placeholder="Description" rows="3" required >${task.description}</textarea>
       <button type="submit" class="btn btn-primary update-task">Update Task</button>
     </form>
@@ -469,6 +492,7 @@ window.updateTaskTemplate = updateTaskTemplate;
 const nameFormat = /^[a-zA-Z'.-]+$/;
 const emailFormat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 const passwordFormat = /.{8,}/;
+const titleFormat = /./;
 
 const changeInputBoxStyle = (e, format) => {
   if (e.target.value === "" || format.test(e.target.value)) {
@@ -494,6 +518,11 @@ const addEmailValidation = () => {
 const addPasswordValidation = () => {
   const passwords = Array.from(document.querySelectorAll(".password"));
   passwords.forEach(password => password.addEventListener("keyup", (e) => changeInputBoxStyle(e, passwordFormat)));
+}
+
+const addTitleValidation =() => {
+  const titleInputs = Array.from(document.querySelectorAll(".title"))
+  titleInputs.forEach(title => title.addEventListener("keyup", (e) => changeInputBoxStyle(e, titleFormat)))
 }
 
 //Animate the login/signup button if invalid

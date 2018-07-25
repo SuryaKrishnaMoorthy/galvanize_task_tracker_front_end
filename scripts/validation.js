@@ -1,6 +1,7 @@
 const nameFormat = /^[a-zA-Z'.-]+$/;
 const emailFormat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 const passwordFormat = /.{8,}/;
+const titleFormat = /./;
 
 const changeInputBoxStyle = (e, format) => {
   if (e.target.value === "" || format.test(e.target.value)) {
@@ -26,6 +27,11 @@ const addEmailValidation = () => {
 const addPasswordValidation = () => {
   const passwords = Array.from(document.querySelectorAll(".password"));
   passwords.forEach(password => password.addEventListener("keyup", (e) => changeInputBoxStyle(e, passwordFormat)));
+}
+
+const addTitleValidation =() => {
+  const titleInputs = Array.from(document.querySelectorAll(".title"))
+  titleInputs.forEach(title => title.addEventListener("keyup", (e) => changeInputBoxStyle(e, titleFormat)))
 }
 
 //Animate the login/signup button if invalid
