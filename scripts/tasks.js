@@ -19,6 +19,8 @@ function fetchUserLists() {
       localStorage.setItem('list_id', lists[0].id)
       renderUserLists(lists)
       fetchUserTasks(lists[0])
+    } else {
+      displayNewListTemplateIfNewUser()
     }
   })
   .catch(e => { throw new Error(e) })
@@ -184,7 +186,7 @@ function toggleTaskCompletion (event) {
 
   const list_id = event.target.parentNode.parentNode.getAttribute("data-list-id")
   const task_id = event.target.parentNode.parentNode.getAttribute("data-task-id")
-  
+
   if (event.target.parentNode.className === 'completeTask') {
     updateTask(true, list_id, task_id, null)
   } else {
@@ -278,6 +280,7 @@ function createList(event) {
       localStorage.setItem('list_id', listId)
       listContainer.innerHTML += userListsTemplate(listId, title, 0)
       document.querySelector("#list-title").value = ''
+      document.querySelector('.new-list-or-task').innerHTML = ''
       addClickEventToDeleteListBtn()
       fetchUserLists()
     })
@@ -299,6 +302,10 @@ function deleteListFromDb(event) {
       incompleteTasksContainer.innerHTML = ''
     })
     .catch(e => { throw new Error(e) })
+}
+
+function displayNewListTemplateIfNewUser () {
+  document.querySelector(".add-list").click()
 }
 
 window.fetchUserLists = fetchUserLists

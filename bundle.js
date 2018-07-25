@@ -105,6 +105,8 @@ function fetchUserLists() {
       localStorage.setItem('list_id', lists[0].id)
       renderUserLists(lists)
       fetchUserTasks(lists[0])
+    } else {
+      displayNewListTemplateIfNewUser()
     }
   })
   .catch(e => { throw new Error(e) })
@@ -174,8 +176,8 @@ function renderUserTasks (tasks, completedTasks, incompleteTasks) {
       incompleteTasks.innerHTML += incompleteTaskTemplate(task, timePassed)
     }
   })
-  markIncompleteTaskToComplete();
-  editIncompleteTask(tasks);
+  onClickToggleTaskCompletion()
+  editIncompleteTask(tasks)
   addEventListenerToDeleteTask()
 }
 
@@ -257,17 +259,25 @@ function addClickEventToUpdateBtn(task){
   })
 }
 
-function markIncompleteTaskToComplete() {
-  const completeTaskIcons = Array.from(document.querySelectorAll(".completeTask"));
-  completeTaskIcons.forEach(icon => {
-    icon.addEventListener("click", (event) => {
-      event.preventDefault()
+function onClickToggleTaskCompletion () {
+  const completeTaskIcons = Array.from(document.querySelectorAll(".completeTask"))
+  completeTaskIcons.forEach(icon => icon.addEventListener("click", toggleTaskCompletion))
 
-      const list_id = event.target.parentNode.parentNode.getAttribute("data-list-id");
-      const task_id = event.target.parentNode.parentNode.getAttribute("data-task-id");
-      updateTask(true, list_id, task_id, null)
-    })
-  })
+  const uncompleteTaskIcons = Array.from(document.querySelectorAll(".uncompleteTask"))
+  uncompleteTaskIcons.forEach(icon => icon.addEventListener("click", toggleTaskCompletion))
+}
+
+function toggleTaskCompletion (event) {
+  event.preventDefault()
+
+  const list_id = event.target.parentNode.parentNode.getAttribute("data-list-id")
+  const task_id = event.target.parentNode.parentNode.getAttribute("data-task-id")
+
+  if (event.target.parentNode.className === 'completeTask') {
+    updateTask(true, list_id, task_id, null)
+  } else {
+    updateTask(false, list_id, task_id, null)
+  }
 }
 
 function updateTask(completed, list_id, task_id, task){
@@ -356,6 +366,7 @@ function createList(event) {
       localStorage.setItem('list_id', listId)
       listContainer.innerHTML += userListsTemplate(listId, title, 0)
       document.querySelector("#list-title").value = ''
+      document.querySelector('.new-list-or-task').innerHTML = ''
       addClickEventToDeleteListBtn()
       fetchUserLists()
     })
@@ -377,6 +388,10 @@ function deleteListFromDb(event) {
       incompleteTasksContainer.innerHTML = ''
     })
     .catch(e => { throw new Error(e) })
+}
+
+function displayNewListTemplateIfNewUser () {
+  document.querySelector(".add-list").click()
 }
 
 window.fetchUserLists = fetchUserLists
@@ -410,6 +425,7 @@ function completedTaskTemplate (task, timePassed) {
     </div>
     <div class="done-card-footer">
       <div class="card-icons" data-list-id=${task.list_id} data-task-id=${task.id}>
+        <a class="uncompleteTask"><i class="far fa-check-square"></i></a>
         <a class="deleteTask"><i class="far fa-window-close"></i></a>
         <a class="editCompleteTask"><i class="far fa-edit"></i></a>
       </div>
