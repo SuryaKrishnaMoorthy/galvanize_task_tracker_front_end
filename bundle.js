@@ -86,7 +86,13 @@ validation.addPasswordValidation();
 },{"./tasks.js":2,"./validation.js":4}],2:[function(require,module,exports){
 const templates = require('./templates.js')
 
-if (window.location.href.match('tasks.html') != null) window.onload = displayUserContent()
+if (window.location.href.match('tasks.html') != null) {
+  if (localStorage.getItem('token') !== null) {
+    window.onload = displayUserContent()
+  } else {
+    document.location.replace("./../index.html")
+  }
+}
 
 function displayUserContent () {
   fetchUserLists()
