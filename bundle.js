@@ -112,6 +112,7 @@ function fetchUserLists() {
 
 function renderUserLists(lists) {
   const listContainer = document.querySelector('.list-items-container')
+  console.log("LISTS:", lists)
   if (listContainer.innerHTML !== '') listContainer.innerHTML = ''
   lists.forEach(list => { listContainer.innerHTML += userListsTemplate(list.id, list.title, list.tasks.length) })
   addClickEventToDeleteListBtn()
@@ -225,11 +226,11 @@ function createList(error) {
       method: 'POST'
     })
     .then((response) => {
+      console.log('createList response.data:', response.data)
       const listContainer = document.querySelector('.list-items-container')
       const title = response.data.list.title;
       const listId = response.data.list.id;
       localStorage.setItem('list_id', listId)
-      if (listContainer.innerHTML !== '') listContainer.innerHTML = ''
       listContainer.innerHTML += userListsTemplate(listId, title, 0)
       document.querySelector("#list-title").value = ''
       addClickEventToDeleteListBtn()
@@ -248,12 +249,16 @@ function deleteListFromDb(event) {
     .catch(e => { throw new Error(e) })
 }
 
+<<<<<<< HEAD
 function renderTasks(list){
   const listNodes = Array.from(document.querySelectorAll(".list-of-task"))
   listNodes.forEach(listNode => {
     listNode.addEventListener("click", () => { if(listNode.getAttribute("data-id")) fetchUserTasks(list) } )
   })
 }
+=======
+
+>>>>>>> d72f6f9b2d85302bd4475697e01c4bea2d96824d
 window.fetchUserLists = fetchUserLists
 
 },{"./templates.js":3}],3:[function(require,module,exports){
