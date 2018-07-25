@@ -54,7 +54,10 @@ function fetchUserTasks (list) {
 }
 
 function getTimeDiff (task){
-  let timePassed = (Date.now() - new Date(task.created_at))/1000;
+  let createTime = (task.created_at === task.updated_at) ? task.created_at : task.updated_at;
+  let timeString = (task.created_at === task.updated_at) ? "Created " : "Updated ";
+  let timePassed = (Date.now() - new Date(createTime))/1000;
+
   if (timePassed > 60) {
     timePassed = timePassed/60;
     if (timePassed > 60) {
@@ -71,7 +74,7 @@ function getTimeDiff (task){
   } else {
     timePassed = Math.floor(timePassed) + " seconds";
   }
-  return timePassed;
+  return timeString + timePassed;
 }
 
 function renderUserTasks (tasks, completedTasks, incompleteTasks) {
@@ -106,7 +109,7 @@ function addEventListenerToDeleteTask () {
 function deleteTask (completed, list_id, task_id, task) {
   const token = localStorage.getItem('token')
   const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks/${task_id}`
-  
+
   axios({
     method: 'delete',
     url: url,
