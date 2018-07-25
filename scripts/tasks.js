@@ -87,6 +87,33 @@ function renderUserTasks (tasks, completedTasks, incompleteTasks) {
   })
   markIncompleteTaskToComplete();
   editIncompleteTask(tasks);
+  addEventListenerToDeleteTask()
+}
+
+function addEventListenerToDeleteTask () {
+  const deleteTaskIcons = Array.from(document.querySelectorAll(".deleteTask"))
+  deleteTaskIcons.forEach(icon => {
+    icon.addEventListener("click", (event) => {
+      event.preventDefault()
+
+      const list_id = event.target.parentNode.parentNode.getAttribute("data-list-id")
+      const task_id = event.target.parentNode.parentNode.getAttribute("data-task-id")
+      deleteTask(true, list_id, task_id, null)
+    })
+  })
+}
+
+function deleteTask (completed, list_id, task_id, task) {
+  const token = localStorage.getItem('token')
+  const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks/${task_id}`
+  
+  axios({
+    method: 'delete',
+    url: url,
+    headers: { authorization: `Bearer ${token}` }
+  })
+  .then(response => { fetchUserLists() })
+  .catch(e => { throw new Error(e) })
 }
 
 function addClickEventToNewTaskBtn () {
@@ -119,7 +146,9 @@ function editIncompleteTask(tasks){
   tasks.forEach(task => {
     const selector = "[data-task-id='" + `${task.id}` + "']";
     const taskNode = document.querySelector(selector);
-    taskNode.children[1].addEventListener('click', () => {
+    taskNode.children[1].addEventListener('click', (event) => {
+      event.preventDefault()
+
       const templateArea = document.querySelector(".new-list-or-task");
       templateArea.innerHTML = updateTaskTemplate(task);
       addClickEventToUpdateBtn(task);
@@ -131,6 +160,7 @@ function addClickEventToUpdateBtn(task){
   const createListForm = document.querySelector(".update-task");
   createListForm.addEventListener('click', (event) => {
     event.preventDefault()
+
     const list_id = task.list_id;
     const task_id = task.id;
     task.description = document.querySelector("#task-desc").value;
@@ -142,6 +172,8 @@ function markIncompleteTaskToComplete() {
   const completeTaskIcons = Array.from(document.querySelectorAll(".completeTask"));
   completeTaskIcons.forEach(icon => {
     icon.addEventListener("click", (event) => {
+      event.preventDefault()
+
       const list_id = event.target.parentNode.parentNode.getAttribute("data-list-id");
       const task_id = event.target.parentNode.parentNode.getAttribute("data-task-id");
       updateTask(true, list_id, task_id, null)
