@@ -9,6 +9,7 @@ function incompleteTaskTemplate (task, timePassed) {
       <div class="card-icons" data-list-id=${task.list_id} data-task-id=${task.id}>
         <a class="completeTask"><i class="far fa-check-square"></i></a>
         <a class="editIncompleteTask"><i class="far fa-edit"></i></a>
+        <a class="deleteTask"><i class="far fa-window-close"></i></a>
       </div>
       <p class="updated-time mr-2 mt-1 text-muted"><small>${timePassed} ago</small></p>
     </div>
