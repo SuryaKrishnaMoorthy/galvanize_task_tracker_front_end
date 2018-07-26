@@ -39,7 +39,7 @@ function completedTaskTemplate (task, timePassed) {
 function userListsTemplate (listId, title, taskLength) {
   return `
   <li class="list-group-item list-of-task" data-id=${listId}>${title}
-    <span class="badge badge-info">${taskLength}</span>
+    <span class="badge">${taskLength}</span>
     <span class="close list-delete">&times;</span>
   </li>
   `
