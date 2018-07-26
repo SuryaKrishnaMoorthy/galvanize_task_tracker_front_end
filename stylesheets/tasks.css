@@ -1,3 +1,16 @@
+/* Background */
+
+body {
+  /* background: url(https://images.unsplash.com/photo-1519033285472-99145631eaab?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=05c36d7e44c7196fc03ad515b929fd8b&auto=format&fit=crop&w=2176&q=80); */
+  background: #232526;
+  background: -webkit-linear-gradient(to top, #414345, #232526);
+  background: linear-gradient(to top, #414345, #232526);
+  height: 100vh;
+  /* overflow: hidden;
+  background-repeat: no-repeat;
+  background-size: cover; */
+}
+
 /* Navbar */
 
 .navbar {
@@ -45,7 +58,8 @@
   display: grid;
   grid-template-columns: 15% 85%;
   grid-template-rows: auto;
-  grid-template-areas: "doing-title doing-content"
+  grid-template-areas: "doing-title doing-content";
+  border-radius: 5px;
 }
 
 .complete-tasks-row {
@@ -74,6 +88,8 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  color: rgb(255, 255, 255);
+  align-items: center;
 }
 
 /* Cards & Content */
@@ -96,20 +112,20 @@
   grid-area: doing-content;
   display: flex;
   justify-content: flex-start;
-  overflow: auto;
+  overflow: hidden;
   margin: 5px;
 }
 
-/*
-div.incomplete-tasks:hover, div.complete-tasks:hover {
+div.incomplete-tasks:hover, div.complete-tasks:hover,
+.list-items-container:hover {
   overflow: auto;
-} */
+}
 
 .complete-tasks {
   grid-area: done-content;
   display: flex;
   justify-content: flex-start;
-  overflow: auto;
+  overflow: hidden;
   margin: 5px;
 }
 
@@ -131,14 +147,18 @@ div.incomplete-tasks:hover, div.complete-tasks:hover {
   display: flex;
   flex-direction: column;
   border: 1px solid black;
-  /* border: 2px solid rgba(255, 255, 255, 0.9); */
-  /* color: rgba(255, 255, 255, 0.9); */
+  background: rgba(0, 0, 0, 0.2);
+  color: rgba(255, 255, 255, 0.9);
   border-radius: 5px;
   min-width: 215px;
   height: 185px;
   max-width: 215px;
   margin: 5px;
   cursor: pointer;
+}
+
+.list-delete {
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .doing-card-body, .done-card-body {
@@ -173,9 +193,9 @@ div.incomplete-tasks:hover, div.complete-tasks:hover {
 .list-items-container {
   min-height: 100px;
   max-height: 155px;
-  overflow: scroll;
+  overflow: hidden;
   /* border: 1px solid black; */
-  background: #efefef;
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .list-of-tasks {
@@ -183,6 +203,11 @@ div.incomplete-tasks:hover, div.complete-tasks:hover {
   justify-content: space-between;
   align-items: center;
   margin: 3px 6px;
+}
+
+.list-of-task {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .add-list {
@@ -219,7 +244,7 @@ footer {
   justify-content: center;
   font-weight: bold;
   height: 30px;
-  color: black;
+  color: white;
 }
 
 .copyright-msg {

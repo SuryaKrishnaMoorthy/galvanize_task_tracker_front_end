@@ -501,9 +501,9 @@ function incompleteTaskTemplate (task, timePassed) {
     </div>
     <div class="doing-card-footer">
       <div class="card-icons" data-list-id=${task.list_id} data-task-id=${task.id}>
-        <a class="completeTask"><i class="far fa-check-square"></i></a>
-        <a class="editIncompleteTask"><i class="far fa-edit"></i></a>
-        <a class="deleteTask"><i class="far fa-window-close"></i></a>
+        <a class="completeTask" title="Mark completed"><i class="far fa-check-square"></i></a>
+        <a class="editIncompleteTask" title="Edit task"><i class="far fa-edit"></i></a>
+        <a class="deleteTask" title="Delete task"><i class="far fa-window-close"></i></a>
       </div>
       <p class="updated-time mr-2 mt-1 text-muted"><small>${timePassed} ago</small></p>
     </div>
@@ -520,9 +520,9 @@ function completedTaskTemplate (task, timePassed) {
     </div>
     <div class="done-card-footer">
       <div class="card-icons" data-list-id=${task.list_id} data-task-id=${task.id}>
-        <a class="uncompleteTask"><i class="far fa-check-square"></i></a>
-        <a class="deleteTask"><i class="far fa-window-close"></i></a>
-        <a class="editCompleteTask"><i class="far fa-edit"></i></a>
+        <a class="uncompleteTask" title="Mark incomplete"><i class="far fa-check-square"></i></a>
+        <a class="editCompleteTask" title="Edit task"><i class="far fa-edit"></i></a>
+        <a class="deleteTask" title="Delete task"><i class="far fa-window-close"></i></a>
       </div>
       <p class="updated-time mr-2 mt-1 text-muted"><small>${timePassed} ago</small></p>
     </div>
