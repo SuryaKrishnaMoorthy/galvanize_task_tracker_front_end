@@ -1,4 +1,5 @@
 /* Background */
+
 body {
   background: url(https://images.unsplash.com/photo-1525332193053-dee9e7348624?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a171c64a1cb121a923c4e95d8308ca9e&auto=format&fit=crop&w=1950&q=80);
   overflow: hidden;
@@ -7,12 +8,19 @@ body {
 }
 
 /* Navbar */
+
 .navbar {
   background: rgba(0, 0, 0, 0.38);
 }
 
 .navbar-brand {
   margin-left: 10%;
+  font-family: 'Kirang Haerang', cursive;
+}
+
+.navbar-brand:hover {
+  text-decoration: none;
+  color: rgb(255, 255, 255);
 }
 
 .logout {
@@ -25,6 +33,7 @@ body {
 }
 
 /* Sign Up & Log In */
+
 .login-signup {
   display: grid;
   grid-template-columns: 25% 50% 25%;
@@ -54,6 +63,8 @@ body {
 }
 
 .login-header, .signup-header {
+  font-family: 'Kirang Haerang', cursive;
+  font-size: 30pt;
   align-self: center;
   padding-top: 20px;
 }
@@ -79,6 +90,7 @@ body {
 }
 
 /* Footer */
+
 footer {
   display: flex;
   justify-content: center;
