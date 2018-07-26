@@ -85,6 +85,7 @@ validation.addPasswordValidation();
 
 },{"./tasks.js":2,"./validation.js":4}],2:[function(require,module,exports){
 const templates = require('./templates.js')
+const validation = require('./validation.js')
 
 if (window.location.href.match('tasks.html') != null) {
   if (localStorage.getItem('token') !== null) {
@@ -98,7 +99,6 @@ function displayUserContent () {
   fetchUserLists()
   displayListForm()
   addClickEventToNewTaskBtn()
-  addEventListenerToDeleteTask()
 }
 
 function fetchUserLists() {
@@ -156,6 +156,7 @@ function fetchUserTasks (list) {
 
 function getTimeDiff (task){
   let createTime = (task.created_at === task.updated_at) ? task.created_at : task.updated_at;
+  let timeString = (task.created_at === task.updated_at) ? "Created " : "Updated ";
   let timePassed = (Date.now() - new Date(createTime))/1000;
 
   if (timePassed > 60) {
@@ -174,7 +175,7 @@ function getTimeDiff (task){
   } else {
     timePassed = Math.floor(timePassed) + " seconds";
   }
-  return timePassed
+  return timeString + timePassed;
 }
 
 function renderUserTasks (tasks, completedTasks, incompleteTasks) {
@@ -191,7 +192,8 @@ function renderUserTasks (tasks, completedTasks, incompleteTasks) {
     }
   })
 
-  onClickToggleTaskCompletion()
+  //onClickToggleTaskCompletion()
+  markIncompleteTaskToComplete()
   editIncompleteTask(tasks)
   addEventListenerToDeleteTask()
 }
@@ -240,6 +242,7 @@ function addEventListenerToCreateTaskBtn () {
   createTask.addEventListener('click', (event) => {
     event.preventDefault()
 
+    validation.addTitleValidation(event)
     createNewTask()
   })
 }
@@ -266,40 +269,46 @@ function addClickEventToUpdateBtn(task){
     const list_id = task.list_id;
     const task_id = task.id;
     task.description = document.querySelector("#task-desc").value;
+
+    validation.addTitleValidation()
     updateTask(false, list_id, task_id, task)
   })
 }
 
-function onClickToggleTaskCompletion () {
-  const completeTaskIcons = Array.from(document.querySelectorAll(".completeTask"))
-  completeTaskIcons.forEach(icon => icon.addEventListener("click", toggleTaskCompletion))
+function markIncompleteTaskToComplete() {
+  const completeTaskIcons = Array.from(document.querySelectorAll(".completeTask"));
+  completeTaskIcons.forEach(icon => {
+    icon.addEventListener("click", (event) => {
+      event.preventDefault()
 
-  const uncompleteTaskIcons = Array.from(document.querySelectorAll(".uncompleteTask"))
-  uncompleteTaskIcons.forEach(icon => icon.addEventListener("click", toggleTaskCompletion))
-}
-
-function toggleTaskCompletion (event) {
-  event.preventDefault()
-
-  const list_id = event.target.parentNode.parentNode.getAttribute("data-list-id")
-  const task_id = event.target.parentNode.parentNode.getAttribute("data-task-id")
-
-  if (event.target.parentNode.className === 'completeTask') {
-    updateTask(true, list_id, task_id, null)
-  } else {
-    updateTask(false, list_id, task_id, null)
-  }
+      const list_id = event.target.parentNode.parentNode.getAttribute("data-list-id");
+      const task_id = event.target.parentNode.parentNode.getAttribute("data-task-id");
+      updateTask(true, list_id, task_id, null)
+    })
+  })
 }
 
 function updateTask(completed, list_id, task_id, task){
   const token = localStorage.getItem('token');
   const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks/${task_id}`;
+  task.title = document.getElementById('task-title').value;
+  if(!task.title) {
+    const titleNode = document.getElementById('task-title');
+    titleNode.style.color = "rgb(255, 69, 0)";
+    titleNode.style.borderColor = "rgba(255, 69, 0, 0.5)";
+    titleNode.style.boxShadow = "0 0 8px rgba(250, 128, 114, 0.9)";
+    document.querySelector("#task-title").setAttribute("placeholder", "Please provide Task Title");
+    return
+  }
   let body;
   if (task) {
     body = { title:task.title, description:task.description };
   } else {
     body = { completed };
   }
+
+
+
   axios({
     method: 'patch',
     url: url,
@@ -331,6 +340,15 @@ function createNewTask () {
   const description = document.getElementById('task-desc').value
   const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks`
 
+  if(!title) {
+    const titleNode = document.getElementById('task-title');
+    titleNode.style.color = "rgb(255, 69, 0)";
+    titleNode.style.borderColor = "rgba(255, 69, 0, 0.5)";
+    titleNode.style.boxShadow = "0 0 8px rgba(250, 128, 114, 0.9)";
+    document.querySelector("#task-title").setAttribute("placeholder", "Please provide Task Title");
+    return
+  }
+
   axios({
     method: 'post',
     url: url,
@@ -353,6 +371,7 @@ function displayListForm() {
 
     templateArea.innerHTML = createListTemplate()
     document.querySelector("#list-title").focus()
+    validation.addTitleValidation()
     submitListForm()
   })
 }
@@ -364,7 +383,15 @@ function submitListForm() {
 
 function createList(event) {
   event.preventDefault()
-  const title = document.querySelector("#list-title").value
+  const title = document.querySelector("#list-title").value;
+
+  if(!title) {
+    event.target[0].style.color = "rgb(255, 69, 0)";
+    event.target[0].style.borderColor = "rgba(255, 69, 0, 0.5)";
+    event.target[0].style.boxShadow = "0 0 8px rgba(250, 128, 114, 0.9)";
+    document.querySelector("#list-title").setAttribute("placeholder", "Please provide List Title");
+    return
+  }
 
   axios('https://auth-task-manager-server.herokuapp.com/api/lists', {
     headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -423,7 +450,7 @@ function updateActiveListWhenClicked () {
 
 window.fetchUserLists = fetchUserLists
 
-},{"./templates.js":3}],3:[function(require,module,exports){
+},{"./templates.js":3,"./validation.js":4}],3:[function(require,module,exports){
 function incompleteTaskTemplate (task, timePassed) {
   return `
   <div class="doing-card">
@@ -474,7 +501,8 @@ function userListsTemplate (listId, title, taskLength) {
 function createListTemplate () {
   return `<div class="new-list-container">
     <form class="needs-validation" novalidate>
-      <input type="text" class="form-control list-title" id="list-title" placeholder="List Title" required>
+      <input type="text" class="form-control list-title title" id="list-title" placeholder="List Title" required>
+      <div class="invalid-feedback-list text-danger"><small></small></div>
       <button type="submit" class="btn btn-primary create-list">Create List</button>
     </form>
   </div>`;
@@ -483,7 +511,8 @@ function createListTemplate () {
 function createTaskTemplate () {
   return `<div class="new-task-container">
     <form class="needs-validation" novalidate>
-      <input type="text" class="form-control task-title" id="task-title" placeholder="Title" required>
+      <input type="text" class="form-control task-title title" id="task-title" placeholder="Title" required>
+      <div class="invalid-feedback-task text-danger m-0 p-0"><small></small></div>
       <textarea class="form-control task-desc" id="task-desc" placeholder="Description" rows="3" required></textarea>
       <button type="submit" class="btn btn-primary create-task">Create Task</button>
     </form>
@@ -493,7 +522,8 @@ function createTaskTemplate () {
 function updateTaskTemplate (task) {
   return `<div class="new-task-container">
     <form class="needs-validation" novalidate>
-      <input type="text" class="form-control task-title" id="task-title" placeholder="Title" value="${task.title}" required>
+      <input type="text" class="form-control task-title title" id="task-title" placeholder="Title" value="${task.title}" required>
+      <div class="invalid-feedback-updatetask text-danger"><small></small></div>
       <textarea class="form-control task-desc" id="task-desc" placeholder="Description" rows="3" required >${task.description}</textarea>
       <button type="submit" class="btn btn-primary update-task">Update Task</button>
     </form>
@@ -513,6 +543,7 @@ window.updateTaskTemplate = updateTaskTemplate;
 const nameFormat = /^[a-zA-Z'.-]+$/;
 const emailFormat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 const passwordFormat = /.{8,}/;
+const titleFormat = /./;
 
 const changeInputBoxStyle = (e, format) => {
   if (e.target.value === "" || format.test(e.target.value)) {
@@ -540,6 +571,11 @@ const addPasswordValidation = () => {
   passwords.forEach(password => password.addEventListener("keyup", (e) => changeInputBoxStyle(e, passwordFormat)));
 }
 
+const addTitleValidation = () => {
+  const titleInputs = Array.from(document.querySelectorAll(".title"))
+  titleInputs.forEach(title => title.addEventListener("keyup", (e) => changeInputBoxStyle(e, titleFormat)));
+}
+
 //Animate the login/signup button if invalid
 const shakeNode =  (node) => {
   node.style.boxShadow = "0 0 8px rgba(250, 128, 114, 0.9)";
@@ -565,9 +601,11 @@ module.exports = {
   nameFormat,
   emailFormat,
   passwordFormat,
+  titleFormat,
   addNameValidation,
   addEmailValidation,
   addPasswordValidation,
+  addTitleValidation,
   shakeNode,
   showAndFadeError
 }
