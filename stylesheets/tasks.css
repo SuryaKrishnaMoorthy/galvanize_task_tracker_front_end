@@ -150,9 +150,9 @@ div.incomplete-tasks:hover, div.complete-tasks:hover,
   background: rgba(0, 0, 0, 0.2);
   color: rgba(255, 255, 255, 0.9);
   border-radius: 5px;
-  min-width: 215px;
+  min-width: 220px;
   height: 185px;
-  max-width: 215px;
+  max-width: 220px;
   margin: 5px;
   cursor: pointer;
 }
