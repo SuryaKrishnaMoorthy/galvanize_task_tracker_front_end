@@ -130,8 +130,8 @@ function renderUserLists(lists) {
 
   lists.forEach((list, i) => {
     listContainer.innerHTML += userListsTemplate(list.id, list.title, list.tasks.length)
-    listContainer.children[i].style.backgroundColor = '#fff'
-    if (list.id === parseInt(localStorage.getItem('list_id'))) listContainer.children[i].style.backgroundColor = '#8eb9ff'
+    listContainer.children[i].style.backgroundColor = 'rgba(0, 0, 0, 0.05)'
+    if (list.id === parseInt(localStorage.getItem('list_id'))) listContainer.children[i].style.backgroundColor = 'rgba(20, 100, 160, 0.8)'
   })
   addClickEventToLists(lists)
   updateActiveListWhenClicked()
@@ -160,6 +160,7 @@ function fetchUserTasks(list) {
 
 function getTimeDiff(task) {
   let createTime = (task.created_at === task.updated_at) ? task.created_at : task.updated_at;
+  let timeString = (task.created_at === task.updated_at) ? "Created " : "Updated ";
   let timePassed = (Date.now() - new Date(createTime)) / 1000;
 
   if (timePassed > 60) {
@@ -178,7 +179,7 @@ function getTimeDiff(task) {
   } else {
     timePassed = Math.floor(timePassed) + " seconds";
   }
-  return timePassed
+  return timeString + timePassed;
 }
 
 function renderUserTasks(tasks, completedTasks, incompleteTasks) {
@@ -198,7 +199,6 @@ function renderUserTasks(tasks, completedTasks, incompleteTasks) {
   onClickToggleTaskCompletion()
   markIncompleteTaskToComplete()
   editIncompleteTask(tasks)
-  editCompleteTasks(tasks)
   addEventListenerToDeleteTask()
 }
 
@@ -259,9 +259,8 @@ function addEventListenerToCreateTaskBtn() {
 
 function editIncompleteTask(tasks) {
   tasks.forEach(task => {
-    const selector = "[data-task-id='" + `${task.id}` + "']"
-    const taskNode = document.querySelector(selector)
-
+    const selector = "[data-task-id='" + `${task.id}` + "']";
+    const taskNode = document.querySelector(selector);
     taskNode.children[1].addEventListener('click', (event) => {
       event.preventDefault()
 
@@ -269,23 +268,6 @@ function editIncompleteTask(tasks) {
       templateArea.innerHTML = updateTaskTemplate(task);
       addClickEventToUpdateBtn(task);
     })
-  })
-}
-
-function editCompleteTasks (tasks) {
-  tasks.forEach(task => {
-    const selector = "[data-task-id='" + `${task.id}` + "']"
-    const taskNode = document.querySelector(selector)
-
-    if (task.completed) {
-      taskNode.children[2].addEventListener('click', (event) => {
-        event.preventDefault()
-
-        const templateArea = document.querySelector(".new-list-or-task")
-        templateArea.innerHTML = updateTaskTemplate(task)
-        addClickEventToUpdateBtn(task)
-      })
-    }
   })
 }
 
@@ -314,27 +296,6 @@ function markIncompleteTaskToComplete() {
       updateTask(true, list_id, task_id, null)
     })
   })
-}
-
-function onClickToggleTaskCompletion () {
-  const completeTaskIcons = Array.from(document.querySelectorAll(".completeTask"))
-  completeTaskIcons.forEach(icon => icon.addEventListener("click", toggleTaskCompletion))
-
-  const uncompleteTaskIcons = Array.from(document.querySelectorAll(".uncompleteTask"))
-  uncompleteTaskIcons.forEach(icon => icon.addEventListener("click", toggleTaskCompletion))
-}
-
-function toggleTaskCompletion (event) {
-  event.preventDefault()
-
-  const list_id = event.target.parentNode.parentNode.getAttribute("data-list-id")
-  const task_id = event.target.parentNode.parentNode.getAttribute("data-task-id")
-
-  if (event.target.parentNode.className === 'completeTask') {
-    updateTask(true, list_id, task_id, null)
-  } else {
-    updateTask(false, list_id, task_id, null)
-  }
 }
 
 function updateTask(completed, list_id, task_id, task) {
@@ -377,7 +338,6 @@ function updateTask(completed, list_id, task_id, task) {
     })
     .then(response => {
       document.querySelector(".new-list-or-task").innerHTML = ''
-      if (!task) //
       fetchUserLists()
     })
     .catch(e => {
@@ -521,12 +481,33 @@ function updateActiveListWhenClicked() {
       event.preventDefault()
 
       document.querySelectorAll('.list-of-task').forEach(li => {
-        if (li.style.backgroundColor !== '#fff') li.style.backgroundColor = '#fff'
+        if (li.style.backgroundColor !== 'rgba(0, 0, 0, 0.05)') li.style.backgroundColor = 'rgba(0, 0, 0, 0.05)'
       })
 
-      list.style.backgroundColor = '#8eb9ff'
+      list.style.backgroundColor = 'rgba(20, 100, 160, 0.8)'
     })
   })
+}
+
+function onClickToggleTaskCompletion () {
+  const completeTaskIcons = Array.from(document.querySelectorAll(".completeTask"))
+  completeTaskIcons.forEach(icon => icon.addEventListener("click", toggleTaskCompletion))
+
+  const uncompleteTaskIcons = Array.from(document.querySelectorAll(".uncompleteTask"))
+  uncompleteTaskIcons.forEach(icon => icon.addEventListener("click", toggleTaskCompletion))
+}
+
+function toggleTaskCompletion (event) {
+  event.preventDefault()
+
+  const list_id = event.target.parentNode.parentNode.getAttribute("data-list-id")
+  const task_id = event.target.parentNode.parentNode.getAttribute("data-task-id")
+
+  if (event.target.parentNode.className === 'completeTask') {
+    updateTask(true, list_id, task_id, null)
+  } else {
+    updateTask(false, list_id, task_id, null)
+  }
 }
 
 window.fetchUserLists = fetchUserLists
@@ -541,9 +522,9 @@ function incompleteTaskTemplate (task, timePassed) {
     </div>
     <div class="doing-card-footer">
       <div class="card-icons" data-list-id=${task.list_id} data-task-id=${task.id}>
-        <a class="completeTask"><i class="far fa-check-square"></i></a>
-        <a class="editIncompleteTask"><i class="far fa-edit"></i></a>
-        <a class="deleteTask"><i class="far fa-window-close"></i></a>
+        <a class="completeTask" title="Mark completed"><i class="far fa-check-square"></i></a>
+        <a class="editIncompleteTask" title="Edit task"><i class="far fa-edit"></i></a>
+        <a class="deleteTask" title="Delete task"><i class="far fa-window-close"></i></a>
       </div>
       <p class="updated-time mr-2 mt-1 text-muted"><small>${timePassed} ago</small></p>
     </div>
@@ -560,9 +541,9 @@ function completedTaskTemplate (task, timePassed) {
     </div>
     <div class="done-card-footer">
       <div class="card-icons" data-list-id=${task.list_id} data-task-id=${task.id}>
-        <a class="uncompleteTask"><i class="far fa-check-square"></i></a>
-        <a class="deleteTask"><i class="far fa-window-close"></i></a>
-        <a class="editCompleteTask"><i class="far fa-edit"></i></a>
+        <a class="uncompleteTask" title="Mark incomplete"><i class="far fa-check-square"></i></a>
+        <a class="editCompleteTask" title="Edit task"><i class="far fa-edit"></i></a>
+        <a class="deleteTask" title="Delete task"><i class="far fa-window-close"></i></a>
       </div>
       <p class="updated-time mr-2 mt-1 text-muted"><small>${timePassed} ago</small></p>
     </div>
@@ -573,7 +554,7 @@ function completedTaskTemplate (task, timePassed) {
 function userListsTemplate (listId, title, taskLength) {
   return `
   <li class="list-group-item list-of-task" data-id=${listId}>${title}
-    <span class="badge badge-info">${taskLength}</span>
+    <span class="badge">${taskLength}</span>
     <span class="close list-delete">&times;</span>
   </li>
   `
