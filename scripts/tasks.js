@@ -110,7 +110,7 @@ function renderUserTasks(tasks, completedTasks, incompleteTasks) {
     }
   })
 
-  //onClickToggleTaskCompletion()
+  onClickToggleTaskCompletion()
   markIncompleteTaskToComplete()
   editIncompleteTask(tasks)
   addEventListenerToDeleteTask()
@@ -215,7 +215,7 @@ function markIncompleteTaskToComplete() {
 function updateTask(completed, list_id, task_id, task) {
   const token = localStorage.getItem('token');
   const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks/${task_id}`;
-  
+
   if(task){
     task.title = document.getElementById('task-title').value;
     if (!task.title) {
@@ -401,6 +401,27 @@ function updateActiveListWhenClicked() {
       list.style.backgroundColor = '#8eb9ff'
     })
   })
+}
+
+function onClickToggleTaskCompletion () {
+  const completeTaskIcons = Array.from(document.querySelectorAll(".completeTask"))
+  completeTaskIcons.forEach(icon => icon.addEventListener("click", toggleTaskCompletion))
+
+  const uncompleteTaskIcons = Array.from(document.querySelectorAll(".uncompleteTask"))
+  uncompleteTaskIcons.forEach(icon => icon.addEventListener("click", toggleTaskCompletion))
+}
+
+function toggleTaskCompletion (event) {
+  event.preventDefault()
+
+  const list_id = event.target.parentNode.parentNode.getAttribute("data-list-id")
+  const task_id = event.target.parentNode.parentNode.getAttribute("data-task-id")
+
+  if (event.target.parentNode.className === 'completeTask') {
+    updateTask(true, list_id, task_id, null)
+  } else {
+    updateTask(false, list_id, task_id, null)
+  }
 }
 
 window.fetchUserLists = fetchUserLists
