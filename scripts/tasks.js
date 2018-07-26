@@ -44,8 +44,8 @@ function renderUserLists(lists) {
 
   lists.forEach((list, i) => {
     listContainer.innerHTML += userListsTemplate(list.id, list.title, list.tasks.length)
-    listContainer.children[i].style.backgroundColor = '#fff'
-    if (list.id === parseInt(localStorage.getItem('list_id'))) listContainer.children[i].style.backgroundColor = '#8eb9ff'
+    listContainer.children[i].style.backgroundColor = 'rgba(0, 0, 0, 0.05)'
+    if (list.id === parseInt(localStorage.getItem('list_id'))) listContainer.children[i].style.backgroundColor = 'rgba(20, 100, 160, 0.8)'
   })
   addClickEventToLists(lists)
   updateActiveListWhenClicked()
@@ -395,10 +395,10 @@ function updateActiveListWhenClicked() {
       event.preventDefault()
 
       document.querySelectorAll('.list-of-task').forEach(li => {
-        if (li.style.backgroundColor !== '#fff') li.style.backgroundColor = '#fff'
+        if (li.style.backgroundColor !== 'rgba(0, 0, 0, 0.05)') li.style.backgroundColor = 'rgba(0, 0, 0, 0.05)'
       })
 
-      list.style.backgroundColor = '#8eb9ff'
+      list.style.backgroundColor = 'rgba(20, 100, 160, 0.8)'
     })
   })
 }
