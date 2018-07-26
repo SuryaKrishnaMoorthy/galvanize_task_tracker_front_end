@@ -215,15 +215,19 @@ function markIncompleteTaskToComplete() {
 function updateTask(completed, list_id, task_id, task) {
   const token = localStorage.getItem('token');
   const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks/${task_id}`;
-  task.title = document.getElementById('task-title').value;
-  if (!task.title) {
-    const titleNode = document.getElementById('task-title');
-    titleNode.style.color = "rgb(255, 69, 0)";
-    titleNode.style.borderColor = "rgba(255, 69, 0, 0.5)";
-    titleNode.style.boxShadow = "0 0 8px rgba(250, 128, 114, 0.9)";
-    document.querySelector("#task-title").setAttribute("placeholder", "Please provide Task Title");
-    return
+  
+  if(task){
+    task.title = document.getElementById('task-title').value;
+    if (!task.title) {
+      const titleNode = document.getElementById('task-title');
+      titleNode.style.color = "rgb(255, 69, 0)";
+      titleNode.style.borderColor = "rgba(255, 69, 0, 0.5)";
+      titleNode.style.boxShadow = "0 0 8px rgba(250, 128, 114, 0.9)";
+      document.querySelector("#task-title").setAttribute("placeholder", "Please provide Task Title");
+      return
+    }
   }
+
   let body;
   if (task) {
     body = {
