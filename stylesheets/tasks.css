@@ -1,6 +1,27 @@
+/* Navbar */
+
+.navbar {
+  background: rgba(0, 0, 0, 0.38);
+  height: 55px;
+}
+
+.navbar-brand {
+  margin-left: 10%;
+}
+
+.logout {
+  margin-right: 10%;
+}
+
+.logout, .navbar-brand {
+  font-weight: bold;
+  color: rgb(255, 255, 255);
+}
+
 /* Task Tracker */
+
 .lists-row, .incomplete-tasks-row, .complete-tasks-row {
-  max-height: 210px;
+  height: 220px;
 }
 
 .task-tracker {
@@ -8,10 +29,7 @@
   display: grid;
   grid-template-columns: 10% 80% 10%;
   grid-template-rows: auto;
-  grid-template-areas:
-    ". lists ."
-    ". doing ."
-    ". done ."
+  grid-template-areas: ". lists ." ". doing ." ". done ."
 }
 
 .lists-row {
@@ -19,8 +37,7 @@
   display: grid;
   grid-template-columns: 15% 85%;
   grid-template-rows: auto;
-  grid-template-areas:
-    "list-title list-content"
+  grid-template-areas: "list-title list-content"
 }
 
 .incomplete-tasks-row {
@@ -28,8 +45,7 @@
   display: grid;
   grid-template-columns: 15% 85%;
   grid-template-rows: auto;
-  grid-template-areas:
-    "doing-title doing-content"
+  grid-template-areas: "doing-title doing-content"
 }
 
 .complete-tasks-row {
@@ -37,11 +53,11 @@
   display: grid;
   grid-template-columns: 15% 85%;
   grid-template-rows: auto;
-  grid-template-areas:
-    "done-title done-content"
+  grid-template-areas: "done-title done-content"
 }
 
 /* Headers */
+
 .lists-header {
   grid-area: list-title;
 }
@@ -54,8 +70,14 @@
   grid-area: done-title;
 }
 
+.lists-header, .incomplete-tasks-header, .complete-tasks-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
 /* Cards & Content */
+
 .text-muted {
   margin-top: 0 !important;
 }
@@ -65,30 +87,46 @@
   display: grid;
   grid-template-columns: 50% 50%;
   grid-template-rows: 100%;
-  grid-template-areas:
-    "userlists list-or-task"
+  grid-template-areas: "userlists list-or-task";
+  margin: 5px;
+  cursor: pointer;
 }
 
 .incomplete-tasks {
   grid-area: doing-content;
   display: flex;
   justify-content: flex-start;
-  overflow: scroll;
+  overflow: auto;
+  margin: 5px;
 }
+
+/*
+div.incomplete-tasks:hover, div.complete-tasks:hover {
+  overflow: auto;
+} */
 
 .complete-tasks {
   grid-area: done-content;
+  display: flex;
+  justify-content: flex-start;
+  overflow: auto;
+  margin: 5px;
 }
 
 .user-lists {
   grid-area: userlists;
+  margin: 10px 5px;
+  height: 170px;
 }
 
 .new-list-or-task {
   grid-area: list-or-task;
+  margin-left: 5px;
+  margin-top: 10px;
 }
 
 /* Doing card title, body, foot */
+
 .doing-card, .done-card {
   display: flex;
   flex-direction: column;
@@ -96,10 +134,11 @@
   /* border: 2px solid rgba(255, 255, 255, 0.9); */
   /* color: rgba(255, 255, 255, 0.9); */
   border-radius: 5px;
-  min-width: 200px;
-  min-height: 200px;
-  max-width: 200px;
-  max-height: 200px;
+  min-width: 215px;
+  height: 185px;
+  max-width: 215px;
+  margin: 5px;
+  cursor: pointer;
 }
 
 .doing-card-body, .done-card-body {
@@ -119,21 +158,23 @@
   border-bottom: 1px solid black;
 }
 
-.doing-completed{
+.doing-completed {
   cursor: pointer;
 }
 
 .add-task {
   border: 1px solid black;
   background: #007bff;
+  width: 110px;
 }
 
 /* Lists */
+
 .list-items-container {
   min-height: 100px;
-  max-height: 175px;
+  max-height: 155px;
   overflow: scroll;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   background: #efefef;
 }
 
@@ -155,21 +196,32 @@
 
 /* Lists form */
 
-.new-task-container,
-.new-list-container{
-   height: 200px;
-   display: flex;
-   flex-direction: column;
-   justify-content: space-around;
-}
-.new-task-container form,
-.new-list-container form{
-  height: 200px;
+.new-task-container, .new-list-container {
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
-.needs-validation input,
-.needs-validation textarea,
-.needs-validation button{
+.new-task-container form, .new-list-container form {
+  height: 170px;
+}
+
+.needs-validation input, .needs-validation textarea, .needs-validation button {
   margin-top: 10px;
-  width: 400px;
+  width: 100%;
+}
+
+/* Footer */
+
+footer {
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+  height: 30px;
+  color: black;
+}
+
+.copyright-msg {
+  align-self: center;
 }
