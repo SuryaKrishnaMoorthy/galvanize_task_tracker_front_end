@@ -140,6 +140,24 @@ div.incomplete-tasks:hover, div.complete-tasks:hover,
   margin-top: 10px;
 }
 
+.badge {
+  background: rgba(81, 185, 255, 0.65);
+  color: rgba(255, 255, 255, 0.9);
+  margin-left: 10px;
+}
+
+.fa-window-close {
+  color: rgba(247, 7, 7, 0.65);
+}
+
+.fa-check-square {
+  color: rgba(7, 247, 7, 0.65);
+}
+
+.fa-edit {
+  color: rgba(0, 123, 255, 0.65);
+}
+
 /* Doing card title, body, foot */
 
 .doing-card, .done-card {
@@ -175,6 +193,7 @@ div.incomplete-tasks:hover, div.complete-tasks:hover,
 
 .doing-card-title, .done-card-title {
   border-bottom: 1px solid black;
+  color: rgba(216, 216, 216, 0.9);
 }
 
 .doing-completed {
@@ -183,7 +202,7 @@ div.incomplete-tasks:hover, div.complete-tasks:hover,
 
 .add-task {
   border: 1px solid black;
-  background: #007bff;
+  background: rgba(19, 90, 138, .8);
   width: 110px;
 }
 
@@ -205,7 +224,6 @@ div.incomplete-tasks:hover, div.complete-tasks:hover,
 }
 
 .list-of-task {
-  background-color: rgba(0, 0, 0, 0.05) !important;
   color: rgba(255, 255, 255, 0.9);
 }
 
@@ -215,7 +233,13 @@ div.incomplete-tasks:hover, div.complete-tasks:hover,
   height: 25px;
   z-index: 10;
   border: 1px solid black;
-  border-radius: 0;
+  border-radius: 5;
+  background: rgba(19, 90, 138, .8);
+  color: black;
+}
+
+.add-list:hover, .add-task:hover {
+  background: rgb(20, 100, 160);
 }
 
 /* Lists form */
