@@ -1,14 +1,10 @@
 /* Background */
 
 body {
-  /* background: url(https://images.unsplash.com/photo-1519033285472-99145631eaab?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=05c36d7e44c7196fc03ad515b929fd8b&auto=format&fit=crop&w=2176&q=80); */
   background: #232526;
   background: -webkit-linear-gradient(to top, #414345, #232526);
   background: linear-gradient(to top, #414345, #232526);
   height: 100vh;
-  /* overflow: hidden;
-  background-repeat: no-repeat;
-  background-size: cover; */
 }
 
 /* Navbar */
@@ -19,16 +15,33 @@ body {
 }
 
 .navbar-brand {
+  font-family: 'Kirang Haerang', cursive;
   margin-left: 10%;
 }
 
+.navbar-brand:hover {
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+}
+
 .logout {
+  font-family: 'Kirang Haerang', cursive;
   margin-right: 10%;
 }
 
 .logout, .navbar-brand {
   font-weight: bold;
   color: rgb(255, 255, 255);
+}
+
+.logout:hover {
+  text-decoration: none;
+}
+
+/* Row Headers */
+
+.lists-title, .incomplete-tasks-title, .complete-tasks-title {
+  font-family: 'Kirang Haerang', cursive;
 }
 
 /* Task Tracker */
@@ -117,8 +130,7 @@ body {
   margin: 5px;
 }
 
-div.incomplete-tasks:hover, div.complete-tasks:hover,
-.list-items-container:hover {
+div.incomplete-tasks:hover, div.complete-tasks:hover, .list-items-container:hover {
   overflow: auto;
 }
 
@@ -213,7 +225,6 @@ div.incomplete-tasks:hover, div.complete-tasks:hover,
   min-height: 100px;
   max-height: 155px;
   overflow: hidden;
-  /* border: 1px solid black; */
   background: rgba(0, 0, 0, 0.2);
 }
 
