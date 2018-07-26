@@ -160,6 +160,7 @@ function fetchUserTasks(list) {
 
 function getTimeDiff(task) {
   let createTime = (task.created_at === task.updated_at) ? task.created_at : task.updated_at;
+  let timeString = (task.created_at === task.updated_at) ? "Created " : "Updated ";
   let timePassed = (Date.now() - new Date(createTime)) / 1000;
 
   if (timePassed > 60) {
@@ -178,7 +179,7 @@ function getTimeDiff(task) {
   } else {
     timePassed = Math.floor(timePassed) + " seconds";
   }
-  return timePassed
+  return timeString + timePassed;
 }
 
 function renderUserTasks(tasks, completedTasks, incompleteTasks) {
@@ -198,7 +199,6 @@ function renderUserTasks(tasks, completedTasks, incompleteTasks) {
   onClickToggleTaskCompletion()
   markIncompleteTaskToComplete()
   editIncompleteTask(tasks)
-  editCompleteTasks(tasks)
   addEventListenerToDeleteTask()
 }
 
@@ -259,9 +259,8 @@ function addEventListenerToCreateTaskBtn() {
 
 function editIncompleteTask(tasks) {
   tasks.forEach(task => {
-    const selector = "[data-task-id='" + `${task.id}` + "']"
-    const taskNode = document.querySelector(selector)
-
+    const selector = "[data-task-id='" + `${task.id}` + "']";
+    const taskNode = document.querySelector(selector);
     taskNode.children[1].addEventListener('click', (event) => {
       event.preventDefault()
 
@@ -269,23 +268,6 @@ function editIncompleteTask(tasks) {
       templateArea.innerHTML = updateTaskTemplate(task);
       addClickEventToUpdateBtn(task);
     })
-  })
-}
-
-function editCompleteTasks (tasks) {
-  tasks.forEach(task => {
-    const selector = "[data-task-id='" + `${task.id}` + "']"
-    const taskNode = document.querySelector(selector)
-
-    if (task.completed) {
-      taskNode.children[2].addEventListener('click', (event) => {
-        event.preventDefault()
-
-        const templateArea = document.querySelector(".new-list-or-task")
-        templateArea.innerHTML = updateTaskTemplate(task)
-        addClickEventToUpdateBtn(task)
-      })
-    }
   })
 }
 
@@ -314,27 +296,6 @@ function markIncompleteTaskToComplete() {
       updateTask(true, list_id, task_id, null)
     })
   })
-}
-
-function onClickToggleTaskCompletion () {
-  const completeTaskIcons = Array.from(document.querySelectorAll(".completeTask"))
-  completeTaskIcons.forEach(icon => icon.addEventListener("click", toggleTaskCompletion))
-
-  const uncompleteTaskIcons = Array.from(document.querySelectorAll(".uncompleteTask"))
-  uncompleteTaskIcons.forEach(icon => icon.addEventListener("click", toggleTaskCompletion))
-}
-
-function toggleTaskCompletion (event) {
-  event.preventDefault()
-
-  const list_id = event.target.parentNode.parentNode.getAttribute("data-list-id")
-  const task_id = event.target.parentNode.parentNode.getAttribute("data-task-id")
-
-  if (event.target.parentNode.className === 'completeTask') {
-    updateTask(true, list_id, task_id, null)
-  } else {
-    updateTask(false, list_id, task_id, null)
-  }
 }
 
 function updateTask(completed, list_id, task_id, task) {
@@ -377,7 +338,6 @@ function updateTask(completed, list_id, task_id, task) {
     })
     .then(response => {
       document.querySelector(".new-list-or-task").innerHTML = ''
-      if (!task) //
       fetchUserLists()
     })
     .catch(e => {
@@ -527,6 +487,27 @@ function updateActiveListWhenClicked() {
       list.style.backgroundColor = '#8eb9ff'
     })
   })
+}
+
+function onClickToggleTaskCompletion () {
+  const completeTaskIcons = Array.from(document.querySelectorAll(".completeTask"))
+  completeTaskIcons.forEach(icon => icon.addEventListener("click", toggleTaskCompletion))
+
+  const uncompleteTaskIcons = Array.from(document.querySelectorAll(".uncompleteTask"))
+  uncompleteTaskIcons.forEach(icon => icon.addEventListener("click", toggleTaskCompletion))
+}
+
+function toggleTaskCompletion (event) {
+  event.preventDefault()
+
+  const list_id = event.target.parentNode.parentNode.getAttribute("data-list-id")
+  const task_id = event.target.parentNode.parentNode.getAttribute("data-task-id")
+
+  if (event.target.parentNode.className === 'completeTask') {
+    updateTask(true, list_id, task_id, null)
+  } else {
+    updateTask(false, list_id, task_id, null)
+  }
 }
 
 window.fetchUserLists = fetchUserLists
