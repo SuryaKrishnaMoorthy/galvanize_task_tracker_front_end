@@ -125,8 +125,7 @@ div.incomplete-tasks:hover, div.complete-tasks:hover,
   grid-area: done-content;
   display: flex;
   justify-content: flex-start;
-  overflow: hidden;
-  margin: 5px;
+  overflow: scroll;
 }
 
 .user-lists {
