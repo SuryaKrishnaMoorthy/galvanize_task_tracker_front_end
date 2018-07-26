@@ -45,7 +45,7 @@ function renderUserLists(lists) {
   lists.forEach((list, i) => {
     listContainer.innerHTML += userListsTemplate(list.id, list.title, list.tasks.length)
     listContainer.children[i].style.backgroundColor = 'rgba(0, 0, 0, 0.05)'
-    if (list.id === parseInt(localStorage.getItem('list_id'))) listContainer.children[i].style.backgroundColor = 'rgba(20, 100, 160, 0.8)'
+    if (list.id === parseInt(localStorage.getItem('list_id'))) listContainer.children[i].style.backgroundColor = 'rgba(0, 40, 142, 0.5)'
   })
   addClickEventToLists(lists)
   updateActiveListWhenClicked()
@@ -398,7 +398,7 @@ function updateActiveListWhenClicked() {
         if (li.style.backgroundColor !== 'rgba(0, 0, 0, 0.05)') li.style.backgroundColor = 'rgba(0, 0, 0, 0.05)'
       })
 
-      list.style.backgroundColor = 'rgba(20, 100, 160, 0.8)'
+      list.style.backgroundColor = 'rgba(0, 40, 142, 0.5)'
     })
   })
 }
