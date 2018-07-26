@@ -112,6 +112,7 @@ function renderUserTasks(tasks, completedTasks, incompleteTasks) {
   onClickToggleTaskCompletion()
   markIncompleteTaskToComplete()
   editIncompleteTask(tasks)
+  editCompleteTasks(tasks)
   addEventListenerToDeleteTask()
 }
 
@@ -172,8 +173,9 @@ function addEventListenerToCreateTaskBtn() {
 
 function editIncompleteTask(tasks) {
   tasks.forEach(task => {
-    const selector = "[data-task-id='" + `${task.id}` + "']";
-    const taskNode = document.querySelector(selector);
+    const selector = "[data-task-id='" + `${task.id}` + "']"
+    const taskNode = document.querySelector(selector)
+
     taskNode.children[1].addEventListener('click', (event) => {
       event.preventDefault()
 
@@ -181,6 +183,23 @@ function editIncompleteTask(tasks) {
       templateArea.innerHTML = updateTaskTemplate(task);
       addClickEventToUpdateBtn(task);
     })
+  })
+}
+
+function editCompleteTasks (tasks) {
+  tasks.forEach(task => {
+    const selector = "[data-task-id='" + `${task.id}` + "']"
+    const taskNode = document.querySelector(selector)
+
+    if (task.completed) {
+      taskNode.children[2].addEventListener('click', (event) => {
+        event.preventDefault()
+
+        const templateArea = document.querySelector(".new-list-or-task")
+        templateArea.innerHTML = updateTaskTemplate(task)
+        addClickEventToUpdateBtn(task)
+      })
+    }
   })
 }
 
@@ -272,6 +291,7 @@ function updateTask(completed, list_id, task_id, task) {
     })
     .then(response => {
       document.querySelector(".new-list-or-task").innerHTML = ''
+      if (!task) //
       fetchUserLists()
     })
     .catch(e => {
