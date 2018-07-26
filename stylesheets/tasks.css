@@ -78,6 +78,9 @@
 
 .complete-tasks {
   grid-area: done-content;
+  display: flex;
+  justify-content: flex-start;
+  overflow: scroll;
 }
 
 .user-lists {
