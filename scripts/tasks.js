@@ -182,19 +182,19 @@ function addClickEventToUpdateBtn(task){
     updateTask(false, list_id, task_id, task)
   })
 }
-// 
-// function markIncompleteTaskToComplete() {
-//   const completeTaskIcons = Array.from(document.querySelectorAll(".completeTask"));
-//   completeTaskIcons.forEach(icon => {
-//     icon.addEventListener("click", (event) => {
-//       event.preventDefault()
-//
-//       const list_id = event.target.parentNode.parentNode.getAttribute("data-list-id");
-//       const task_id = event.target.parentNode.parentNode.getAttribute("data-task-id");
-//       updateTask(true, list_id, task_id, null)
-//     })
-//   })
-// }
+
+function markIncompleteTaskToComplete() {
+  const completeTaskIcons = Array.from(document.querySelectorAll(".completeTask"));
+  completeTaskIcons.forEach(icon => {
+    icon.addEventListener("click", (event) => {
+      event.preventDefault()
+
+      const list_id = event.target.parentNode.parentNode.getAttribute("data-list-id");
+      const task_id = event.target.parentNode.parentNode.getAttribute("data-task-id");
+      updateTask(true, list_id, task_id, null)
+    })
+  })
+}
 
 function updateTask(completed, list_id, task_id, task){
   const token = localStorage.getItem('token');
