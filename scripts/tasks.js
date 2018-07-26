@@ -19,12 +19,14 @@ function fetchUserLists() {
   axios.get('https://auth-task-manager-server.herokuapp.com/api/lists', {
     headers: { authorization: `Bearer ${localStorage.getItem('token')}` }
   })
-  .then(response => {
+  .then((response) => {
     const lists = response.data.lists
     if (lists.length) {
-      localStorage.setItem('list_id', lists[0].id)
+      if (localStorage.getItem('list_id') === null) localStorage.setItem('list_id', lists[0].id)
       renderUserLists(lists)
-      fetchUserTasks(lists[0])
+      lists.forEach(list => {
+        if (list.id === parseInt(localStorage.getItem('list_id'))) fetchUserTasks(list)
+      })
     } else {
       displayNewListTemplateIfNewUser()
     }
@@ -38,7 +40,8 @@ function renderUserLists(lists) {
 
   lists.forEach((list, i) => {
     listContainer.innerHTML += userListsTemplate(list.id, list.title, list.tasks.length)
-    if (i === 0) listContainer.children[0].style.backgroundColor = '#8eb9ff'
+    listContainer.children[i].style.backgroundColor = '#fff'
+    if (list.id === parseInt(localStorage.getItem('list_id'))) listContainer.children[i].style.backgroundColor = '#8eb9ff'
   })
   addClickEventToLists(lists)
   updateActiveListWhenClicked()
@@ -278,22 +281,22 @@ function createList(event) {
   const title = document.querySelector("#list-title").value
 
   axios('https://auth-task-manager-server.herokuapp.com/api/lists', {
-      headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
-      data: { title },
-      method: 'POST'
-    })
-    .then((response) => {
-      const listContainer = document.querySelector('.list-items-container')
-      const title = response.data.list.title;
-      const listId = response.data.list.id;
-      localStorage.setItem('list_id', listId)
-      listContainer.innerHTML += userListsTemplate(listId, title, 0)
-      document.querySelector("#list-title").value = ''
-      document.querySelector('.new-list-or-task').innerHTML = ''
-      addClickEventToDeleteListBtn()
-      fetchUserLists()
-    })
-    .catch(e => { throw new Error(e) })
+    headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
+    data: { title },
+    method: 'POST'
+  })
+  .then((response) => {
+    const listContainer = document.querySelector('.list-items-container')
+    const title = response.data.list.title;
+    const listId = response.data.list.id;
+    localStorage.setItem('list_id', listId)
+    listContainer.innerHTML += userListsTemplate(listId, title, 0)
+    document.querySelector("#list-title").value = ''
+    document.querySelector('.new-list-or-task').innerHTML = ''
+    addClickEventToDeleteListBtn()
+    fetchUserLists()
+  })
+  .catch(e => { throw new Error(e) })
 }
 
 function deleteListFromDb(event) {
