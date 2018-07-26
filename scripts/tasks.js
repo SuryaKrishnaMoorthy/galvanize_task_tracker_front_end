@@ -1,6 +1,12 @@
 const templates = require('./templates.js')
 
-if (window.location.href.match('tasks.html') != null) window.onload = displayUserContent()
+if (window.location.href.match('tasks.html') != null) {
+  if (localStorage.getItem('token') !== null) {
+    window.onload = displayUserContent()
+  } else {
+    document.location.replace("./../index.html")
+  }
+}
 
 function displayUserContent () {
   fetchUserLists()
@@ -32,16 +38,18 @@ function renderUserLists(lists) {
   lists.forEach(list => {
     listContainer.innerHTML += userListsTemplate(list.id, list.title, list.tasks.length)
   })
-  addClickEventToLists(lists);
+  addClickEventToLists(lists)
+  updateActiveListWhenClicked()
   addClickEventToDeleteListBtn()
 }
 
 function addClickEventToLists(lists) {
   lists.forEach(list => {
-    const selector = "[data-id='" + `${list.id}` + "']";
-    const listNode = document.querySelector(selector);
+    const selector = "[data-id='" + `${list.id}` + "']"
+    const listNode = document.querySelector(selector)
+
     listNode.addEventListener('click', () => {
-      fetchUserTasks(list);
+      fetchUserTasks(list)
     })
   })
 }
@@ -53,7 +61,6 @@ function fetchUserTasks (list) {
   localStorage.setItem('list_id', list.id)
 
   renderUserTasks(tasks, completedTasksContainer, incompleteTasksContainer)
-  // addEventListenersForTaskCardBtns()
 }
 
 function getTimeDiff (task){
@@ -82,14 +89,17 @@ function getTimeDiff (task){
 function renderUserTasks (tasks, completedTasks, incompleteTasks) {
   if (completedTasks.innerHTML !== '') completedTasks.innerHTML = ''
   if (incompleteTasks.innerHTML !== '') incompleteTasks.innerHTML = ''
+
   tasks.forEach(task => {
-    const timePassed = getTimeDiff(task);
+    const timePassed = getTimeDiff(task)
+
     if (task.completed) {
       completedTasks.innerHTML += completedTaskTemplate(task, timePassed)
     } else {
       incompleteTasks.innerHTML += incompleteTaskTemplate(task, timePassed)
     }
   })
+
   onClickToggleTaskCompletion()
   editIncompleteTask(tasks)
   addEventListenerToDeleteTask()
@@ -141,10 +151,6 @@ function addEventListenerToCreateTaskBtn () {
 
     createNewTask()
   })
-}
-
-function addEventListenersForTaskCardBtns (task) {
-  // complete task btn, update task btn, maybe a delete task btn
 }
 
 function editIncompleteTask(tasks){
@@ -210,7 +216,8 @@ function updateTask(completed, list_id, task_id, task){
     data: body
   })
   .then(response => {
-    fetchUserLists();
+    document.querySelector(".new-list-or-task").innerHTML = ''
+    fetchUserLists()
   })
   .catch(e => { throw new Error(e) })
 }
@@ -306,6 +313,21 @@ function deleteListFromDb(event) {
 
 function displayNewListTemplateIfNewUser () {
   document.querySelector(".add-list").click()
+}
+
+function updateActiveListWhenClicked () {
+  const lists = document.querySelectorAll('.list-of-task')
+  lists.forEach(list => {
+    list.addEventListener('click', (event) => {
+      event.preventDefault()
+
+      document.querySelectorAll('.list-of-task').forEach(li => {
+        if (li.style.backgroundColor !== '#fff') li.style.backgroundColor = '#fff'
+      })
+
+      list.style.backgroundColor = '#8eb9ff'
+    })
+  })
 }
 
 window.fetchUserLists = fetchUserLists
