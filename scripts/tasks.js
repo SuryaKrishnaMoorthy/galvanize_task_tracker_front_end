@@ -74,7 +74,6 @@ function fetchUserTasks(list) {
 
 function getTimeDiff(task) {
   let createTime = (task.created_at === task.updated_at) ? task.created_at : task.updated_at;
-  let timeString = (task.created_at === task.updated_at) ? "Created " : "Updated ";
   let timePassed = (Date.now() - new Date(createTime)) / 1000;
 
   if (timePassed > 60) {
@@ -93,7 +92,7 @@ function getTimeDiff(task) {
   } else {
     timePassed = Math.floor(timePassed) + " seconds";
   }
-  return timeString + timePassed;
+  return timePassed
 }
 
 function renderUserTasks(tasks, completedTasks, incompleteTasks) {
@@ -110,7 +109,7 @@ function renderUserTasks(tasks, completedTasks, incompleteTasks) {
     }
   })
 
-  //onClickToggleTaskCompletion()
+  onClickToggleTaskCompletion()
   markIncompleteTaskToComplete()
   editIncompleteTask(tasks)
   addEventListenerToDeleteTask()
@@ -212,10 +211,31 @@ function markIncompleteTaskToComplete() {
   })
 }
 
+function onClickToggleTaskCompletion () {
+  const completeTaskIcons = Array.from(document.querySelectorAll(".completeTask"))
+  completeTaskIcons.forEach(icon => icon.addEventListener("click", toggleTaskCompletion))
+
+  const uncompleteTaskIcons = Array.from(document.querySelectorAll(".uncompleteTask"))
+  uncompleteTaskIcons.forEach(icon => icon.addEventListener("click", toggleTaskCompletion))
+}
+
+function toggleTaskCompletion (event) {
+  event.preventDefault()
+
+  const list_id = event.target.parentNode.parentNode.getAttribute("data-list-id")
+  const task_id = event.target.parentNode.parentNode.getAttribute("data-task-id")
+
+  if (event.target.parentNode.className === 'completeTask') {
+    updateTask(true, list_id, task_id, null)
+  } else {
+    updateTask(false, list_id, task_id, null)
+  }
+}
+
 function updateTask(completed, list_id, task_id, task) {
   const token = localStorage.getItem('token');
   const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks/${task_id}`;
-  
+
   if(task){
     task.title = document.getElementById('task-title').value;
     if (!task.title) {
