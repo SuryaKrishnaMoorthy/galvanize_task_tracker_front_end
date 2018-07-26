@@ -29,9 +29,9 @@ const addPasswordValidation = () => {
   passwords.forEach(password => password.addEventListener("keyup", (e) => changeInputBoxStyle(e, passwordFormat)));
 }
 
-const addTitleValidation =() => {
+const addTitleValidation = () => {
   const titleInputs = Array.from(document.querySelectorAll(".title"))
-  titleInputs.forEach(title => title.addEventListener("keyup", (e) => changeInputBoxStyle(e, titleFormat)))
+  titleInputs.forEach(title => title.addEventListener("keyup", (e) => changeInputBoxStyle(e, titleFormat)));
 }
 
 //Animate the login/signup button if invalid
@@ -59,9 +59,11 @@ module.exports = {
   nameFormat,
   emailFormat,
   passwordFormat,
+  titleFormat,
   addNameValidation,
   addEmailValidation,
   addPasswordValidation,
+  addTitleValidation,
   shakeNode,
   showAndFadeError
 }

@@ -7,7 +7,6 @@ function displayUserContent () {
   fetchUserLists()
   displayListForm()
   addClickEventToNewTaskBtn()
-  addEventListenerToDeleteTask()
 }
 
 function fetchUserLists() {
@@ -20,8 +19,6 @@ function fetchUserLists() {
       localStorage.setItem('list_id', lists[0].id)
       renderUserLists(lists)
       fetchUserTasks(lists[0])
-    } else {
-      displayNewListTemplateIfNewUser()
     }
   })
   .catch(e => { throw new Error(e) })
@@ -59,6 +56,7 @@ function fetchUserTasks (list) {
 
 function getTimeDiff (task){
   let createTime = (task.created_at === task.updated_at) ? task.created_at : task.updated_at;
+  let timeString = (task.created_at === task.updated_at) ? "Created " : "Updated ";
   let timePassed = (Date.now() - new Date(createTime))/1000;
 
   if (timePassed > 60) {
@@ -77,7 +75,7 @@ function getTimeDiff (task){
   } else {
     timePassed = Math.floor(timePassed) + " seconds";
   }
-  return timePassed
+  return timeString + timePassed;
 }
 
 function renderUserTasks (tasks, completedTasks, incompleteTasks) {
@@ -91,8 +89,8 @@ function renderUserTasks (tasks, completedTasks, incompleteTasks) {
       incompleteTasks.innerHTML += incompleteTaskTemplate(task, timePassed)
     }
   })
-  onClickToggleTaskCompletion()
-  editIncompleteTask(tasks)
+  markIncompleteTaskToComplete();
+  editIncompleteTask(tasks);
   addEventListenerToDeleteTask()
 }
 
@@ -140,7 +138,8 @@ function addEventListenerToCreateTaskBtn () {
   createTask.addEventListener('click', (event) => {
     event.preventDefault()
 
-    createNewTask(event)
+    validation.addTitleValidation(event)
+    createNewTask()
   })
 }
 
@@ -170,34 +169,37 @@ function addClickEventToUpdateBtn(task){
     const list_id = task.list_id;
     const task_id = task.id;
     task.description = document.querySelector("#task-desc").value;
+
+    validation.addTitleValidation()
     updateTask(false, list_id, task_id, task)
   })
 }
 
-function onClickToggleTaskCompletion () {
-  const completeTaskIcons = Array.from(document.querySelectorAll(".completeTask"))
-  completeTaskIcons.forEach(icon => icon.addEventListener("click", toggleTaskCompletion))
+function markIncompleteTaskToComplete() {
+  const completeTaskIcons = Array.from(document.querySelectorAll(".completeTask"));
+  completeTaskIcons.forEach(icon => {
+    icon.addEventListener("click", (event) => {
+      event.preventDefault()
 
-  const uncompleteTaskIcons = Array.from(document.querySelectorAll(".uncompleteTask"))
-  uncompleteTaskIcons.forEach(icon => icon.addEventListener("click", toggleTaskCompletion))
-}
-
-function toggleTaskCompletion (event) {
-  event.preventDefault()
-
-  const list_id = event.target.parentNode.parentNode.getAttribute("data-list-id")
-  const task_id = event.target.parentNode.parentNode.getAttribute("data-task-id")
-
-  if (event.target.parentNode.className === 'completeTask') {
-    updateTask(true, list_id, task_id, null)
-  } else {
-    updateTask(false, list_id, task_id, null)
-  }
+      const list_id = event.target.parentNode.parentNode.getAttribute("data-list-id");
+      const task_id = event.target.parentNode.parentNode.getAttribute("data-task-id");
+      updateTask(true, list_id, task_id, null)
+    })
+  })
 }
 
 function updateTask(completed, list_id, task_id, task){
   const token = localStorage.getItem('token');
   const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks/${task_id}`;
+  task.title = document.getElementById('task-title').value;
+  if(!task.title) {
+    const titleNode = document.getElementById('task-title');
+    titleNode.style.color = "rgb(255, 69, 0)";
+    titleNode.style.borderColor = "rgba(255, 69, 0, 0.5)";
+    titleNode.style.boxShadow = "0 0 8px rgba(250, 128, 114, 0.9)";
+    document.querySelector("#task-title").setAttribute("placeholder", "Please provide Task Title");
+    return
+  }
   let body;
   if (task) {
     body = { title:task.title, description:task.description };
@@ -205,10 +207,7 @@ function updateTask(completed, list_id, task_id, task){
     body = { completed };
   }
 
-  if(!task.title){
-    document.querySelector(".invalid-feedback-updatetask small").innerHTML = "Please provide title";
-    return;
-  }
+
 
   axios({
     method: 'patch',
@@ -233,20 +232,21 @@ function addClickEventToDeleteListBtn() {
   })
 }
 
-function createNewTask (event) {
+function createNewTask () {
   const list_id = localStorage.getItem('list_id')
   const token = localStorage.getItem('token')
   const title = document.getElementById('task-title').value
   const description = document.getElementById('task-desc').value
-
-  if(!title){
-    const titleFormat = /./;
-    validation.changeInputBoxStyle(event, titleFormat);
-    document.querySelector(".invalid-feedback-task small").innerHTML = "Please provide title";
-    return;
-  }
-
   const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks`
+
+  if(!title) {
+    const titleNode = document.getElementById('task-title');
+    titleNode.style.color = "rgb(255, 69, 0)";
+    titleNode.style.borderColor = "rgba(255, 69, 0, 0.5)";
+    titleNode.style.boxShadow = "0 0 8px rgba(250, 128, 114, 0.9)";
+    document.querySelector("#task-title").setAttribute("placeholder", "Please provide Task Title");
+    return
+  }
 
   axios({
     method: 'post',
@@ -270,6 +270,7 @@ function displayListForm() {
 
     templateArea.innerHTML = createListTemplate()
     document.querySelector("#list-title").focus()
+    validation.addTitleValidation()
     submitListForm()
   })
 }
@@ -281,11 +282,14 @@ function submitListForm() {
 
 function createList(event) {
   event.preventDefault()
-  const title = document.querySelector("#list-title").value
+  const title = document.querySelector("#list-title").value;
 
-  if(!title){
-    document.querySelector(".invalid-feedback-list small").innerHTML = "Please provide title";
-    return;
+  if(!title) {
+    event.target[0].style.color = "rgb(255, 69, 0)";
+    event.target[0].style.borderColor = "rgba(255, 69, 0, 0.5)";
+    event.target[0].style.boxShadow = "0 0 8px rgba(250, 128, 114, 0.9)";
+    document.querySelector("#list-title").setAttribute("placeholder", "Please provide List Title");
+    return
   }
 
   axios('https://auth-task-manager-server.herokuapp.com/api/lists', {
@@ -300,7 +304,6 @@ function createList(event) {
       localStorage.setItem('list_id', listId)
       listContainer.innerHTML += userListsTemplate(listId, title, 0)
       document.querySelector("#list-title").value = ''
-      document.querySelector('.new-list-or-task').innerHTML = ''
       addClickEventToDeleteListBtn()
       fetchUserLists()
     })
@@ -322,10 +325,6 @@ function deleteListFromDb(event) {
       incompleteTasksContainer.innerHTML = ''
     })
     .catch(e => { throw new Error(e) })
-}
-
-function displayNewListTemplateIfNewUser () {
-  document.querySelector(".add-list").click()
 }
 
 window.fetchUserLists = fetchUserLists
