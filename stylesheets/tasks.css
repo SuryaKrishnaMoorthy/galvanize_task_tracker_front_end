@@ -1,14 +1,10 @@
 /* Background */
 
 body {
-  /* background: url(https://images.unsplash.com/photo-1519033285472-99145631eaab?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=05c36d7e44c7196fc03ad515b929fd8b&auto=format&fit=crop&w=2176&q=80); */
   background: #232526;
   background: -webkit-linear-gradient(to top, #414345, #232526);
   background: linear-gradient(to top, #414345, #232526);
   height: 100vh;
-  /* overflow: hidden;
-  background-repeat: no-repeat;
-  background-size: cover; */
 }
 
 /* Navbar */
@@ -19,16 +15,33 @@ body {
 }
 
 .navbar-brand {
+  font-family: 'Kirang Haerang', cursive;
   margin-left: 10%;
 }
 
+.navbar-brand:hover {
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+}
+
 .logout {
+  font-family: 'Kirang Haerang', cursive;
   margin-right: 10%;
 }
 
 .logout, .navbar-brand {
   font-weight: bold;
   color: rgb(255, 255, 255);
+}
+
+.logout:hover {
+  text-decoration: none;
+}
+
+/* Row Headers */
+
+.lists-title, .incomplete-tasks-title, .complete-tasks-title {
+  font-family: 'Kirang Haerang', cursive;
 }
 
 /* Task Tracker */
@@ -96,6 +109,7 @@ body {
 
 .text-muted {
   margin-top: 0 !important;
+  margin-right: 0 !important;
 }
 
 .lists-or-new-tasks-area {
@@ -116,8 +130,7 @@ body {
   margin: 5px;
 }
 
-div.incomplete-tasks:hover, div.complete-tasks:hover,
-.list-items-container:hover {
+div.incomplete-tasks:hover, div.complete-tasks:hover, .list-items-container:hover {
   overflow: auto;
 }
 
@@ -138,6 +151,24 @@ div.incomplete-tasks:hover, div.complete-tasks:hover,
   grid-area: list-or-task;
   margin-left: 5px;
   margin-top: 10px;
+}
+
+.badge {
+  background: rgba(81, 185, 255, 0.65);
+  color: rgba(255, 255, 255, 0.9);
+  margin-left: 10px;
+}
+
+.fa-window-close {
+  color: rgba(247, 7, 7, 0.65);
+}
+
+.fa-check-square {
+  color: rgba(7, 247, 7, 0.65);
+}
+
+.fa-edit {
+  color: rgba(0, 123, 255, 0.65);
 }
 
 /* Doing card title, body, foot */
@@ -175,6 +206,7 @@ div.incomplete-tasks:hover, div.complete-tasks:hover,
 
 .doing-card-title, .done-card-title {
   border-bottom: 1px solid black;
+  color: rgba(216, 216, 216, 0.9);
 }
 
 .doing-completed {
@@ -183,7 +215,7 @@ div.incomplete-tasks:hover, div.complete-tasks:hover,
 
 .add-task {
   border: 1px solid black;
-  background: #007bff;
+  background: rgba(0, 123, 255, 0.8);
   width: 110px;
 }
 
@@ -193,7 +225,6 @@ div.incomplete-tasks:hover, div.complete-tasks:hover,
   min-height: 100px;
   max-height: 155px;
   overflow: hidden;
-  /* border: 1px solid black; */
   background: rgba(0, 0, 0, 0.2);
 }
 
@@ -205,7 +236,6 @@ div.incomplete-tasks:hover, div.complete-tasks:hover,
 }
 
 .list-of-task {
-  background-color: rgba(0, 0, 0, 0.05) !important;
   color: rgba(255, 255, 255, 0.9);
 }
 
@@ -215,7 +245,18 @@ div.incomplete-tasks:hover, div.complete-tasks:hover,
   height: 25px;
   z-index: 10;
   border: 1px solid black;
-  border-radius: 0;
+  border-radius: 5;
+  background: rgba(0, 123, 255, 0.8);
+  color: black;
+}
+
+.add-list:hover, .add-task:hover, .create-list:hover, .create-task:hover, .update-task:hover {
+  background: rgba(0, 123, 255, 0.9);
+  color: black;
+}
+
+.create-list, .create-task, .update-task {
+  background: rgba(0, 123, 255, 0.8);
 }
 
 /* Lists form */

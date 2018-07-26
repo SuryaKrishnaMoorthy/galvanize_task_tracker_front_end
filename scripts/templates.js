@@ -39,7 +39,7 @@ function completedTaskTemplate (task, timePassed) {
 function userListsTemplate (listId, title, taskLength) {
   return `
   <li class="list-group-item list-of-task" data-id=${listId}>${title}
-    <span class="badge badge-info">${taskLength}</span>
+    <span class="badge">${taskLength}</span>
     <span class="close list-delete">&times;</span>
   </li>
   `
@@ -50,7 +50,7 @@ function createListTemplate () {
     <form class="needs-validation" novalidate>
       <input type="text" class="form-control list-title title" id="list-title" placeholder="List Title" required>
       <div class="invalid-feedback-list text-danger"><small></small></div>
-      <button type="submit" class="btn btn-primary create-list">Create List</button>
+      <button type="submit" class="btn create-list">Create List</button>
     </form>
   </div>`;
 }
@@ -61,7 +61,7 @@ function createTaskTemplate () {
       <input type="text" class="form-control task-title title" id="task-title" placeholder="Title" required>
       <div class="invalid-feedback-task text-danger m-0 p-0"><small></small></div>
       <textarea class="form-control task-desc" id="task-desc" placeholder="Description" rows="3" required></textarea>
-      <button type="submit" class="btn btn-primary create-task">Create Task</button>
+      <button type="submit" class="btn create-task">Create Task</button>
     </form>
   </div>`;
 }
@@ -72,7 +72,7 @@ function updateTaskTemplate (task) {
       <input type="text" class="form-control task-title title" id="task-title" placeholder="Title" value="${task.title}" required>
       <div class="invalid-feedback-updatetask text-danger"><small></small></div>
       <textarea class="form-control task-desc" id="task-desc" placeholder="Description" rows="3" required >${task.description}</textarea>
-      <button type="submit" class="btn btn-primary update-task">Update Task</button>
+      <button type="submit" class="btn update-task">Update Task</button>
     </form>
   </div>`;
 }
