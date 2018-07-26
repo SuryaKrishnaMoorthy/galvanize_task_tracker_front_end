@@ -9,7 +9,7 @@ if (window.location.href.match('tasks.html') != null) {
   }
 }
 
-function displayUserContent () {
+function displayUserContent() {
   fetchUserLists()
   displayListForm()
   addClickEventToNewTaskBtn()
@@ -17,17 +17,25 @@ function displayUserContent () {
 
 function fetchUserLists() {
   axios.get('https://auth-task-manager-server.herokuapp.com/api/lists', {
-    headers: { authorization: `Bearer ${localStorage.getItem('token')}` }
-  })
-  .then(response => {
-    const lists = response.data.lists
-    if (lists.length) {
-      localStorage.setItem('list_id', lists[0].id)
-      renderUserLists(lists)
-      fetchUserTasks(lists[0])
-    }
-  })
-  .catch(e => { throw new Error(e) })
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    .then((response) => {
+      const lists = response.data.lists
+      if (lists.length) {
+        if (localStorage.getItem('list_id') === null) localStorage.setItem('list_id', lists[0].id)
+        renderUserLists(lists)
+        lists.forEach(list => {
+          if (list.id === parseInt(localStorage.getItem('list_id'))) fetchUserTasks(list)
+        })
+      } else {
+        displayNewListTemplateIfNewUser()
+      }
+    })
+    .catch(e => {
+      throw new Error(e)
+    })
 }
 
 function renderUserLists(lists) {
@@ -36,7 +44,8 @@ function renderUserLists(lists) {
 
   lists.forEach((list, i) => {
     listContainer.innerHTML += userListsTemplate(list.id, list.title, list.tasks.length)
-    if (i === 0) listContainer.children[0].style.backgroundColor = '#8eb9ff'
+    listContainer.children[i].style.backgroundColor = '#fff'
+    if (list.id === parseInt(localStorage.getItem('list_id'))) listContainer.children[i].style.backgroundColor = '#8eb9ff'
   })
   addClickEventToLists(lists)
   updateActiveListWhenClicked()
@@ -54,7 +63,7 @@ function addClickEventToLists(lists) {
   })
 }
 
-function fetchUserTasks (list) {
+function fetchUserTasks(list) {
   const tasks = list.tasks
   const completedTasksContainer = document.querySelector('.complete-tasks')
   const incompleteTasksContainer = document.querySelector('.incomplete-tasks')
@@ -63,17 +72,17 @@ function fetchUserTasks (list) {
   renderUserTasks(tasks, completedTasksContainer, incompleteTasksContainer)
 }
 
-function getTimeDiff (task){
+function getTimeDiff(task) {
   let createTime = (task.created_at === task.updated_at) ? task.created_at : task.updated_at;
   let timeString = (task.created_at === task.updated_at) ? "Created " : "Updated ";
-  let timePassed = (Date.now() - new Date(createTime))/1000;
+  let timePassed = (Date.now() - new Date(createTime)) / 1000;
 
   if (timePassed > 60) {
-    timePassed = timePassed/60;
+    timePassed = timePassed / 60;
     if (timePassed > 60) {
-      timePassed = timePassed/60;
+      timePassed = timePassed / 60;
       if (timePassed > 24) {
-        timePassed = timePassed/24;
+        timePassed = timePassed / 24;
         timePassed = Math.floor(timePassed) + " days";
       } else {
         timePassed = Math.floor(timePassed) + " hours";
@@ -87,7 +96,7 @@ function getTimeDiff (task){
   return timeString + timePassed;
 }
 
-function renderUserTasks (tasks, completedTasks, incompleteTasks) {
+function renderUserTasks(tasks, completedTasks, incompleteTasks) {
   if (completedTasks.innerHTML !== '') completedTasks.innerHTML = ''
   if (incompleteTasks.innerHTML !== '') incompleteTasks.innerHTML = ''
 
@@ -101,12 +110,13 @@ function renderUserTasks (tasks, completedTasks, incompleteTasks) {
     }
   })
 
-  onClickToggleTaskCompletion()
+  //onClickToggleTaskCompletion()
+  markIncompleteTaskToComplete()
   editIncompleteTask(tasks)
   addEventListenerToDeleteTask()
 }
 
-function addEventListenerToDeleteTask () {
+function addEventListenerToDeleteTask() {
   const deleteTaskIcons = Array.from(document.querySelectorAll(".deleteTask"))
   deleteTaskIcons.forEach(icon => {
     icon.addEventListener("click", (event) => {
@@ -119,20 +129,26 @@ function addEventListenerToDeleteTask () {
   })
 }
 
-function deleteTask (completed, list_id, task_id, task) {
+function deleteTask(completed, list_id, task_id, task) {
   const token = localStorage.getItem('token')
   const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks/${task_id}`
 
   axios({
-    method: 'delete',
-    url: url,
-    headers: { authorization: `Bearer ${token}` }
-  })
-  .then(response => { fetchUserLists() })
-  .catch(e => { throw new Error(e) })
+      method: 'delete',
+      url: url,
+      headers: {
+        authorization: `Bearer ${token}`
+      }
+    })
+    .then(response => {
+      fetchUserLists()
+    })
+    .catch(e => {
+      throw new Error(e)
+    })
 }
 
-function addClickEventToNewTaskBtn () {
+function addClickEventToNewTaskBtn() {
   const newTaskBtn = document.querySelector('.add-task')
 
   newTaskBtn.addEventListener('click', (event) => {
@@ -144,7 +160,7 @@ function addClickEventToNewTaskBtn () {
   })
 }
 
-function addEventListenerToCreateTaskBtn () {
+function addEventListenerToCreateTaskBtn() {
   const createTask = document.querySelector('.create-task')
 
   createTask.addEventListener('click', (event) => {
@@ -155,7 +171,7 @@ function addEventListenerToCreateTaskBtn () {
   })
 }
 
-function editIncompleteTask(tasks){
+function editIncompleteTask(tasks) {
   tasks.forEach(task => {
     const selector = "[data-task-id='" + `${task.id}` + "']";
     const taskNode = document.querySelector(selector);
@@ -169,7 +185,7 @@ function editIncompleteTask(tasks){
   })
 }
 
-function addClickEventToUpdateBtn(task){
+function addClickEventToUpdateBtn(task) {
   const createListForm = document.querySelector(".update-task");
   createListForm.addEventListener('click', (event) => {
     event.preventDefault()
@@ -196,11 +212,11 @@ function markIncompleteTaskToComplete() {
   })
 }
 
-function updateTask(completed, list_id, task_id, task){
+function updateTask(completed, list_id, task_id, task) {
   const token = localStorage.getItem('token');
   const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks/${task_id}`;
   task.title = document.getElementById('task-title').value;
-  if(!task.title) {
+  if (!task.title) {
     const titleNode = document.getElementById('task-title');
     titleNode.style.color = "rgb(255, 69, 0)";
     titleNode.style.borderColor = "rgba(255, 69, 0, 0.5)";
@@ -210,24 +226,33 @@ function updateTask(completed, list_id, task_id, task){
   }
   let body;
   if (task) {
-    body = { title:task.title, description:task.description };
+    body = {
+      title: task.title,
+      description: task.description
+    };
   } else {
-    body = { completed };
+    body = {
+      completed
+    };
   }
 
 
 
   axios({
-    method: 'patch',
-    url: url,
-    headers: { authorization: `Bearer ${token}` },
-    data: body
-  })
-  .then(response => {
-    document.querySelector(".new-list-or-task").innerHTML = ''
-    fetchUserLists()
-  })
-  .catch(e => { throw new Error(e) })
+      method: 'patch',
+      url: url,
+      headers: {
+        authorization: `Bearer ${token}`
+      },
+      data: body
+    })
+    .then(response => {
+      document.querySelector(".new-list-or-task").innerHTML = ''
+      fetchUserLists()
+    })
+    .catch(e => {
+      throw new Error(e)
+    })
 }
 
 function addClickEventToDeleteListBtn() {
@@ -241,14 +266,14 @@ function addClickEventToDeleteListBtn() {
   })
 }
 
-function createNewTask () {
+function createNewTask() {
   const list_id = localStorage.getItem('list_id')
   const token = localStorage.getItem('token')
   const title = document.getElementById('task-title').value
   const description = document.getElementById('task-desc').value
   const url = `https://auth-task-manager-server.herokuapp.com/api/lists/${list_id}/tasks`
 
-  if(!title) {
+  if (!title) {
     const titleNode = document.getElementById('task-title');
     titleNode.style.color = "rgb(255, 69, 0)";
     titleNode.style.borderColor = "rgba(255, 69, 0, 0.5)";
@@ -258,16 +283,24 @@ function createNewTask () {
   }
 
   axios({
-    method: 'post',
-    url: url,
-    headers: { authorization: `Bearer ${token}` },
-    data: { title, description, list_id }
-  })
-  .then(response => {
-    displayUserContent()
-    document.querySelector('.new-list-or-task').innerHTML = ''
-  })
-  .catch(e => { throw new Error(e) })
+      method: 'post',
+      url: url,
+      headers: {
+        authorization: `Bearer ${token}`
+      },
+      data: {
+        title,
+        description,
+        list_id
+      }
+    })
+    .then(response => {
+      displayUserContent()
+      document.querySelector('.new-list-or-task').innerHTML = ''
+    })
+    .catch(e => {
+      throw new Error(e)
+    })
 }
 
 function displayListForm() {
@@ -293,7 +326,7 @@ function createList(event) {
   event.preventDefault()
   const title = document.querySelector("#list-title").value;
 
-  if(!title) {
+  if (!title) {
     event.target[0].style.color = "rgb(255, 69, 0)";
     event.target[0].style.borderColor = "rgba(255, 69, 0, 0.5)";
     event.target[0].style.boxShadow = "0 0 8px rgba(250, 128, 114, 0.9)";
@@ -302,8 +335,12 @@ function createList(event) {
   }
 
   axios('https://auth-task-manager-server.herokuapp.com/api/lists', {
-      headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
-      data: { title },
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('token')}`
+      },
+      data: {
+        title
+      },
       method: 'POST'
     })
     .then((response) => {
@@ -313,10 +350,13 @@ function createList(event) {
       localStorage.setItem('list_id', listId)
       listContainer.innerHTML += userListsTemplate(listId, title, 0)
       document.querySelector("#list-title").value = ''
+      document.querySelector('.new-list-or-task').innerHTML = ''
       addClickEventToDeleteListBtn()
       fetchUserLists()
     })
-    .catch(e => { throw new Error(e) })
+    .catch(e => {
+      throw new Error(e)
+    })
 }
 
 function deleteListFromDb(event) {
@@ -324,7 +364,9 @@ function deleteListFromDb(event) {
   const listId = currentListNode.getAttribute("data-id")
 
   axios.delete(`https://auth-task-manager-server.herokuapp.com/api/lists/${listId}`, {
-      headers: {  authorization: `Bearer ${localStorage.getItem('token')}` }
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('token')}`
+      }
     })
     .then(response => {
       currentListNode.style.display = "none"
@@ -333,14 +375,16 @@ function deleteListFromDb(event) {
       const incompleteTasksContainer = document.querySelector('.incomplete-tasks')
       incompleteTasksContainer.innerHTML = ''
     })
-    .catch(e => { throw new Error(e) })
+    .catch(e => {
+      throw new Error(e)
+    })
 }
 
-function displayNewListTemplateIfNewUser () {
+function displayNewListTemplateIfNewUser() {
   document.querySelector(".add-list").click()
 }
 
-function updateActiveListWhenClicked () {
+function updateActiveListWhenClicked() {
   const lists = document.querySelectorAll('.list-of-task')
   lists.forEach(list => {
     list.addEventListener('click', (event) => {
