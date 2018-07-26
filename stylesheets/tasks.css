@@ -96,6 +96,7 @@ body {
 
 .text-muted {
   margin-top: 0 !important;
+  margin-right: 0 !important;
 }
 
 .lists-or-new-tasks-area {
@@ -202,7 +203,7 @@ div.incomplete-tasks:hover, div.complete-tasks:hover,
 
 .add-task {
   border: 1px solid black;
-  background: rgba(19, 90, 138, .8);
+  background: rgba(0, 123, 255, 0.8);
   width: 110px;
 }
 
@@ -234,12 +235,17 @@ div.incomplete-tasks:hover, div.complete-tasks:hover,
   z-index: 10;
   border: 1px solid black;
   border-radius: 5;
-  background: rgba(19, 90, 138, .8);
+  background: rgba(0, 123, 255, 0.8);
   color: black;
 }
 
-.add-list:hover, .add-task:hover {
-  background: rgb(20, 100, 160);
+.add-list:hover, .add-task:hover, .create-list:hover, .create-task:hover, .update-task:hover {
+  background: rgba(0, 123, 255, 0.9);
+  color: black;
+}
+
+.create-list, .create-task, .update-task {
+  background: rgba(0, 123, 255, 0.8);
 }
 
 /* Lists form */
