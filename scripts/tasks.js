@@ -35,8 +35,10 @@ function fetchUserLists() {
 function renderUserLists(lists) {
   const listContainer = document.querySelector('.list-items-container')
   if (listContainer.innerHTML !== '') listContainer.innerHTML = ''
-  lists.forEach(list => {
+
+  lists.forEach((list, i) => {
     listContainer.innerHTML += userListsTemplate(list.id, list.title, list.tasks.length)
+    if (i === 0) listContainer.children[0].style.backgroundColor = '#8eb9ff'
   })
   addClickEventToLists(lists)
   updateActiveListWhenClicked()
