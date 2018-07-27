@@ -29,16 +29,16 @@ Home Page:
 
 ## How to install?
 
--Fork and clone the repo.
--Run npm install in the repo.
--Run npm run dev start.
+  - Fork and clone the repo.
+  - Run npm install in the repo.
+  - Run npm run dev start.
 
 ### Technologies used
 
-    -HTML5, CSS3, JS
-    -Bootstrap
-    -Browserify, Watchify, Live-server
-    -Axios
-    -knex
+    - HTML5, CSS3, JS
+    - Bootstrap
+    - Browserify, Watchify, Live-server
+    - Axios
+    - knex
 
 #### Developed by Nate Semmler and Surya Krishna Moorthy
