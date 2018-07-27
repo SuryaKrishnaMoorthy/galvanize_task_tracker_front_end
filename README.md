@@ -27,7 +27,7 @@ Home Page:
 
 ![home page](./images/homePage.png)
 
-##How to install?
+## How to install?
 
 -Fork and clone the repo.
 -Run npm install in the repo.
