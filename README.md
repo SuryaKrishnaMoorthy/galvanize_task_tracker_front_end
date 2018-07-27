@@ -10,12 +10,12 @@ This is an application to keep track of various tasks. Galvanize Task tracker ca
 
 ## Features
 
-  -New user can signup with first name, last name, unique email and password.
-  -Existing users can login with email and password.
-  -The User can add and delete lists
-  -The User can add tasks to selected lists.
-  -Tasks can be updated or deleted.
-  -User can toggle the tasks between completed tasks and incomplete tasks.
+  - New user can signup with first name, last name, unique email and password.
+  - Existing users can login with email and password.
+  - The User can add and delete lists
+  - The User can add tasks to selected lists.
+  - Tasks can be updated or deleted.
+  - User can toggle the tasks between completed tasks and incomplete tasks.
 
 ## What Galvanize Task Tracker looks like?
 
@@ -29,16 +29,16 @@ Home Page:
 
 ## How to install?
 
-  - Fork and clone the repo.
-  - Run npm install in the repo.
-  - Run npm run dev start.
+    - Fork and clone the repo.
+    - Run npm install in the repo.
+    - Run npm run dev start.
 
 ### Technologies used
 
-    - HTML5, CSS3, JS
-    - Bootstrap
-    - Browserify, Watchify, Live-server
-    - Axios
-    - knex
+  - HTML5, CSS3, JS
+  - Bootstrap
+  - Browserify, Watchify, Live-server
+  - Axios
+  - knex
 
 #### Developed by Nate Semmler and Surya Krishna Moorthy
